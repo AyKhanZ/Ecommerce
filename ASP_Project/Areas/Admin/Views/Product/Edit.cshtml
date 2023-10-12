@@ -1,0 +1,59 @@
+﻿@using ASP_Project.Areas.Identity.Data.DbContexts;
+@using ASP_Project.Areas.Identity.Data.Models
+@inject UserContext _context
+
+@model Product
+
+@{
+	Layout = "_AdminsLayout";
+	var categories = _context.Categories.ToList();
+}
+
+<form method="post" asp-action="Edit">
+	<div class="border p-3 mt-4">
+		<div class="row pb-2">
+			<h2 class="text-primary">Edit Product</h2>
+			<hr />
+		</div>
+		<div class="mb-3">
+			<label asp-for="Make"></label>
+			<input asp-for="Make" class="form-control" />
+			<span asp-validation-for="Make" class="text-danger"></span>
+		</div>
+		<div class="mb-3">
+			<label asp-for="Description"></label>
+			<input asp-for="Description" class="form-control" />
+			<span asp-validation-for="Description" class="text-danger"></span>
+		</div>
+		<div class="mb-3">
+			<label for="Gender" class="form-label">Gender:</label>
+                <select asp-for="Gender" class="form-select" id="Gender">
+                    <option value="" selected>Select a gender</option>
+                    @foreach (var gender in Enum.GetValues(typeof(Gender)))
+                    {
+                        <option value="@gender">@gender</option>
+                    }
+                </select>
+                <span asp-validation-for="Gender" class="text-danger"></span>
+		</div>
+		<div class="mb-3">
+			<label asp-for="Fabric"></label>
+			<input asp-for="Fabric" class="form-control" />
+			<span asp-validation-for="Fabric" class="text-danger"></span>
+		</div>
+		<div class="mb-3">
+			<select asp-for="CategoryId" class="form-select">
+				<option value="" selected>Select a category</option>
+				@foreach (var category in categories)
+				{
+					<option value="@category.Id">@category.Name</option>
+				}
+			</select>
+			<span asp-validation-for="CategoryId" class="text-danger"></span>
+		</div>
+		<button type="submit" class="btn btn-primary" style="width:150px">Update</button>
+		<a asp-controller="Product" asp-action="Index" class="btn btn-secondary" style="width:150px">
+			Back to List
+		</a>
+	</div>
+</form>

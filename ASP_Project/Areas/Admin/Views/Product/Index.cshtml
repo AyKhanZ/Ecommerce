@@ -1,0 +1,79 @@
+﻿@using ASP_Project.Areas.Identity.Data.Models;
+@model IEnumerable<Product>
+
+@{
+    ViewData["Title"] = "Products"; 
+}
+
+<!DOCTYPE html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="~/css/productIndex.css" />
+</head>
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-primary">Product List</h2>
+        </div>
+        <div class="col-6 text-end">
+            <a asp-controller="Product" asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> &nbsp; Create New Product
+            </a>
+        </div>
+    </div>
+    <br /><br />
+    <table id="tblData" class="table table-bordered table-striped" style="width:100%">
+        <thead>
+            <tr>
+                <th style="text-align: center;">Make</th>
+                <th style="text-align: center;">Description</th>
+                <th style="text-align: center;">Gender</th>
+                <th style="text-align: center;">Fabric</th>
+                <th style="text-align: center;">Category</th>
+                <th style="text-align: center;">Product Variations</th>
+                <th style="text-align: center;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td width="15%">
+                        @item.Make
+                    </td>
+                    <td width="20%">
+                        @item.Description
+                    </td>
+                    <td width="10%">
+                        @item.Gender
+                    </td>
+                    <td width="10%">
+                        @item.Fabric
+                    </td>
+                    <td width="10%">
+                        @item.Category.Name
+                    </td>
+                    <td>
+                        <div class="w-75 btn-group" role="group">
+                            <a asp-controller="Product" asp-action="AddVariation" asp-route-id="@item.Id"
+                               class="btn btn-primary mx-2"> <i class="bi bi-pencil-square"></i>Create variation</a>
+                            @* <a asp-controller="Product" asp-action="EditVariation" asp-route-id="@item.Id" *@
+                            @*    class="btn btn-primary mx-2"> <i class="bi bi-pencil-square"></i>Edit variation</a> *@
+                            @* <a asp-controller="Product" asp-action="DeleteVariation" asp-route-id="@item.Id" *@
+                            @*    class="btn btn-danger mx-2"> <i class="bi bi-trash-fill"></i>Delete variation</a> *@
+                        </div>
+                    </td> 
+                    <td width="15%">
+                        <div class="w-75 btn-group" role="group">
+                            <a asp-controller="Product" asp-action="Edit" asp-route-id="@item.Id"
+                                class="btn btn-primary mx-2"> <i class="bi bi-pencil-square"></i> Edit</a>
+                            <a asp-controller="Product" asp-action="Delete" asp-route-id="@item.Id"
+                                class="btn btn-danger mx-2"> <i class="bi bi-trash-fill"></i> Delete</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
