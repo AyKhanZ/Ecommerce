@@ -1,8 +1,7 @@
 ﻿@using ASP_Project.Areas.Identity.Data.DbContexts;
 @using ASP_Project.Areas.Identity.Data.Models
 @inject UserContext _context
-@model Product
-
+@model Product 
 @{
 	Layout = "_AdminsLayout";
 	var categories = _context.Categories.ToList();
@@ -13,6 +12,11 @@
 		<div class="row pb-2">
 			<h2 class="text-primary">Create Product</h2>
 			<hr />
+		</div>
+		<div class="mb-3">
+			<label asp-for="Name"></label>
+			<input asp-for="Name" class="form-control" />
+			<span asp-validation-for="Name" class="text-danger"></span>
 		</div>
 		<div class="mb-3">
 			<label asp-for="Make"></label>
@@ -48,20 +52,10 @@
 				}
 			</select>
 			<span asp-validation-for="CategoryId" class="text-danger"></span>
-		</div>
-		@* <div class="form-group"> *@
-		@*     <label asp-for="ProductImages" class="control-label"></label> *@
-		@*     <input type="file" name="files" multiple /> <!-- Use 'name="files"' for file input --> *@
-		@*     $1$ <span asp-validation-for="ImageURLs" class="text-danger"></span>  #1# *@
-		@* </div> *@
+		</div> 
 		<button type="submit" class="btn btn-primary" style="width:150px">Create</button>
 		<a asp-controller="Product" asp-action="Index" class="btn btn-secondary" style="width:150px">
 			Back to List
 		</a>
 	</div>
-</form>
-
-@{
-	<partial name="_ValidationScriptsPartial" />
-}
-
+</form> 

@@ -5,7 +5,6 @@
 @{
 	ViewData["Title"] = "Delete category";
 	var categories = _context.Categories.ToList();
-
 }
 
 <form method="post" asp-action="Delete">
@@ -47,8 +46,4 @@
 			Back to List
 		</a>
 	</div>
-</form>
-
-@{
-	<partial name="_ValidationScriptsPartial" />
-}
+</form> 

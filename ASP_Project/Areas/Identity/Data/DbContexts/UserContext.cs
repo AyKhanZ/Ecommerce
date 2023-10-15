@@ -58,7 +58,7 @@ public class UserContext : IdentityDbContext<ApplicationUser>
             entity.Property(p => p.Make).IsRequired().HasMaxLength(25);
             entity.Property(p => p.Gender).IsRequired().HasDefaultValue(Gender.Unisex);
             entity.Property(p => p.Fabric).HasMaxLength(100);
-            entity.Property(p => p.Description).HasMaxLength(1000);
+            entity.Property(p => p.Description).HasMaxLength(1000); // Change 250
             
             entity.HasOne(p => p.Category)
                 .WithMany(c => c.Products)
