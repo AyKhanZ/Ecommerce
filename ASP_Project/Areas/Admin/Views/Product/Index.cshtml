@@ -1,79 +1,83 @@
 ﻿@using ASP_Project.Areas.Identity.Data.Models;
 @model IEnumerable<Product>
-
 @{
     ViewData["Title"] = "Products"; 
-}
-
-<!DOCTYPE html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <link rel="stylesheet" href="~/css/productIndex.css" />
-</head>
-
+    <link rel="stylesheet" href="~/css/productIndex.css">
+}  
+<body>
 <div class="container p-3">
     <div class="row pt-4">
         <div class="col-6">
-            <h2 class="text-primary">Product List</h2>
+            <h2 class="text-primary">Products list</h2>
         </div>
         <div class="col-6 text-end">
-            <a asp-controller="Product" asp-action="Create" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> &nbsp; Create New Product
-            </a>
+            <a asp-controller="Product" asp-action="Create" class="btn btn-cart"><i class="fas fa-plus"></i> Create New Product </a>
         </div>
     </div>
-    <br /><br />
-    <table id="tblData" class="table table-bordered table-striped" style="width:100%">
-        <thead>
-            <tr>
-                <th style="text-align: center;">Make</th>
-                <th style="text-align: center;">Description</th>
-                <th style="text-align: center;">Gender</th>
-                <th style="text-align: center;">Fabric</th>
-                <th style="text-align: center;">Category</th>
-                <th style="text-align: center;">Product Variations</th>
-                <th style="text-align: center;">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td width="15%">
-                        @item.Make
-                    </td>
-                    <td width="20%">
-                        @item.Description
-                    </td>
-                    <td width="10%">
-                        @item.Gender
-                    </td>
-                    <td width="10%">
-                        @item.Fabric
-                    </td>
-                    <td width="10%">
-                        @item.Category.Name
-                    </td>
-                    <td>
-                        <div class="w-75 btn-group" role="group">
-                            <a asp-controller="Product" asp-action="AddVariation" asp-route-id="@item.Id"
-                               class="btn btn-primary mx-2"> <i class="bi bi-pencil-square"></i>Create variation</a>
-                            @* <a asp-controller="Product" asp-action="EditVariation" asp-route-id="@item.Id" *@
-                            @*    class="btn btn-primary mx-2"> <i class="bi bi-pencil-square"></i>Edit variation</a> *@
-                            @* <a asp-controller="Product" asp-action="DeleteVariation" asp-route-id="@item.Id" *@
-                            @*    class="btn btn-danger mx-2"> <i class="bi bi-trash-fill"></i>Delete variation</a> *@
+    <br/>  
+    <div class="products">
+        <div class="container">
+            <div class="product-items">
+                @foreach (var item in Model)
+                {  
+                    <div class="product"> 
+                        <div class="product-content">
+                            <div class="product-img">
+                                @if (item.ProductImages != null && item.ProductImages.Any())
+                                {
+                                    <img src="data:image/jpeg;base64,@Convert.ToBase64String(item.ProductImages.First().ImageData!)" alt="product image">
+                                }
+                                else
+                                {
+                                    <img alt="No image"/>
+                                }
+                            </div>
+                            <div class="product-btns"> 
+                                <a asp-controller="Product" asp-action="Delete" asp-route-id="@item.Id"
+                                class="btn btn-delete"><i class="fas fa-trash"></i> Delete</a>
+                                <a asp-controller="Product" asp-action="Edit" asp-route-id="@item.Id"
+                                class="btn btn-edit"> <i class="fas fa-edit"></i> Edit</a>
+                            </div>
                         </div>
-                    </td> 
-                    <td width="15%">
-                        <div class="w-75 btn-group" role="group">
-                            <a asp-controller="Product" asp-action="Edit" asp-route-id="@item.Id"
-                                class="btn btn-primary mx-2"> <i class="bi bi-pencil-square"></i> Edit</a>
-                            <a asp-controller="Product" asp-action="Delete" asp-route-id="@item.Id"
-                                class="btn btn-danger mx-2"> <i class="bi bi-trash-fill"></i> Delete</a>
+                        
+                        <div class="product-info">
+                            <a href="#" class="product-name">
+                                @item.Name
+                            </a>
+                            <div class="product-info-top">
+                                <h2 class="md-title">
+                                    @item.Producer
+                                    @item.OperatingSystemEnum,
+                                    @item.BatteryCapacity,
+                                    @item.Color,
+                                    @item.RAM,
+                                    @item.InternalMemory
+                                </h2>
+
+                            </div>
+                                @if (item.Discount != null && item.Discount > 0)
+                                {
+                                    var discountPercentage = (decimal)item.Discount / 100; 
+                                    var discountedPrice = item.Price - (item.Price * discountPercentage);
+                                    <p class="product-price-discount">$ @item.Price.ToString("0.00")</p>
+                                    <p class="product-price">$ @discountedPrice.ToString("0.00")</p>
+                                }
+                                else
+                                {
+                                    <p class="product-price">$ @item.Price.ToString("0.00")</p>
+                                }
                         </div>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+                        
+                        @if (item.Discount != null && item.Discount > 0)
+                        {
+                            <div class="off-info">
+                                 <h2 class="sm-title">@item.Discount% off</h2>
+                            </div>
+                        } 
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
 </div>
+</body>

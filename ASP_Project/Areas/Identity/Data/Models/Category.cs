@@ -1,4 +1,5 @@
 ﻿namespace ASP_Project.Areas.Identity.Data.Models;
+
 public class Category
 {
     public int Id { get; set; }

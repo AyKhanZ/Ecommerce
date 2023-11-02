@@ -7,130 +7,126 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace ASP_Project.Areas.Admin.Controllers;
-
 [Area("Admin")]
 [Authorize(Roles = "Admin")]
 public class ProductController : Controller
 {
-    private IValidator<Product> _productValidator { get; set; }
+	private IValidator<Product> _productValidator { get; set; }
 
-    private readonly UserContext _dbContext;
+	private readonly UserContext _dbContext;
 
-    public ProductController(UserContext context, IValidator<Product> validator)
-    {
-        _dbContext = context;
-        _productValidator = validator;
-    }
+	public ProductController(UserContext context, IValidator<Product> validator)
+	{
+		_dbContext = context;
+		_productValidator = validator;
+	}
 
-    // public IActionResult Index()
-    // {
-    //     var products = _dbContext.Products.ToList();
-    //     var productimages = _dbContext.ProductImages.ToList(); //try it
-    //     
-    //     foreach (var product in products)
-    //     {
-    //         product.Category = _dbContext.Categories.FirstOrDefault(c => c.Id == product.CategoryId);
-    //     }
-    //     if (products != null)
-    //     {
-    //         return View(products, productimages);
-    //     }
-    //     throw new ArgumentException("Product is not valid...");
-    // }
+	public async Task<IActionResult> Index()
+	{
+        var products = await _dbContext.Products
+			.Include(v => v.ProductImages)
+			.Include(p => p.Category).ToListAsync();
+		return View(products);
+	} 
 
-    public async Task<IActionResult> Index()
-    {
-        var products = await _dbContext.Products.ToListAsync(); 
+	public IActionResult Create()
+	{
+		return View();
+	}
+	[HttpPost]
+	[ValidateAntiForgeryToken]
+	public async Task<IActionResult> Create(Product? product, IFormFileCollection ProductImages)
+	{
+		ModelState.Clear();
 
-        foreach (var product in products)
-        {
-            product.Category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == product.CategoryId);
-        } 
+		List<ProductImage> productImages = new List<ProductImage>();
+		foreach (var file in ProductImages)
+		{
+			if (file != null && file.Length > 0)
+			{
+				var productImage = new ProductImage();
 
-        return View(products);
-    }
+				using (var memoryStream = new MemoryStream())
+				{
+					await file.CopyToAsync(memoryStream);
+					var imageBytes = memoryStream.ToArray();
+					productImage = new ProductImage
+					{
+						ImageData = imageBytes,
+					};
+					productImages.Add(productImage);
+				}
+			}
+			else return NotFound();
+		}
+
+		product.ProductImages = productImages;  
+
+		var result = await _productValidator.ValidateAsync(product);
+
+		if (!result.IsValid)
+		{
+			result.AddToModelState(ModelState);
+			return View(product);
+		}
+
+		await _dbContext.Products.AddAsync(product);
+		await _dbContext.SaveChangesAsync();
+
+		TempData["success"] = "Product created successfully";
+		return RedirectToAction("Index", "Product");
+	}
+
+	public async Task<IActionResult> Edit(int id)
+	{
+		var product = await _dbContext.Products.FindAsync(id);
+
+		if (product == null) return NotFound();
+		product.ProductImages = await _dbContext.ProductImages.Where(pi => pi.ProductId == id).ToListAsync();
+
+		return View(product);
+	}
+
+	[HttpPost]
+	[ValidateAntiForgeryToken]
+	public async Task<IActionResult> Edit(Product product)
+	{
+		ModelState.Clear(); 
+		var result = await _productValidator.ValidateAsync(product);
+		var p = product;
+		if (!result.IsValid)
+		{
+			result.AddToModelState(ModelState);
+			return View(product);
+		}
+		_dbContext.Products.Update(product);
+		await _dbContext.SaveChangesAsync();
+		TempData["success"] = "Product updated succsessfully";
+		return RedirectToAction("Index", "Product");
+	}
 
 
-    public IActionResult Create()
-    {
-        return View();
-    }
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(Product? product)
-    {
-        var result = await _productValidator.ValidateAsync(product);
+	public async Task<IActionResult> Delete(int id)
+	{
+		var product = await _dbContext.Products.FindAsync(id);
 
-        if (result.IsValid)
-        {
-            await _dbContext.Products.AddAsync(product);  
-            await _dbContext.SaveChangesAsync();
-        }
+		if (product == null) return NotFound();
+		product.ProductImages = await _dbContext.ProductImages.Where(pi => pi.ProductId == id).ToListAsync();
+		
+		return View(product);
+	}
 
-        result.AddToModelState(ModelState);
+	[HttpPost, ActionName("Delete")]
+	[ValidateAntiForgeryToken]
+	public async Task<IActionResult> DeletePost(int id)
+	{
+		var product = await _dbContext!.Products!.FindAsync(id);
 
-        return View(product);
-    }
+		if (product == null) return NotFound();
+		_dbContext.Products.Remove(product);
+		await _dbContext.SaveChangesAsync();
+		TempData["success"] = "Product was deleted succsessfully";
 
-
-    public async Task<IActionResult> Edit(int id)
-    {
-        var product = await _dbContext.Products.FindAsync(id);
-
-        if (product == null) return NotFound();
-
-        return View(product);
-    }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(Product product)
-    {
-        var result = await _productValidator.ValidateAsync(product);
-
-        if (result.IsValid)
-        {
-            _dbContext.Products.Update(product);
-            await _dbContext.SaveChangesAsync();
-            TempData["success"] = "Product updated succsessfully";
-
-            return RedirectToAction("Index", "Product");
-        }
-        result.AddToModelState(ModelState);
-
-        return View(product);
-    }
-
-
-    public async Task<IActionResult> Delete(int id)
-    {
-        var product = await _dbContext.Products.FindAsync(id);
-
-        if (product == null) return NotFound();
-
-        return View(product);
-    }
-
-    [HttpPost, ActionName("Delete")]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeletePost(int id)
-    {
-        var product = await _dbContext!.Products!.FindAsync(id);
-
-        if (product == null) return NotFound();
-        _dbContext.Products.Remove(product);
-        await _dbContext.SaveChangesAsync();
-        TempData["success"] = "Product was deleted succsessfully";
-
-        return RedirectToAction("Index");
-    }
-
-    public async Task<IActionResult> AddVariation(int id)
-    {
-        var product = await _dbContext.Products.FirstOrDefaultAsync(p => p.Id == id);
-
-        if (product != null) return RedirectToAction("Create", "ProductVariation", new { productId = id });
-
-        return NotFound();
-    }
+		return RedirectToAction("Index");
+	} 
 }

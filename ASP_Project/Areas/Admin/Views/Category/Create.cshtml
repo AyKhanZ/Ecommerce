@@ -2,7 +2,6 @@
 @using ASP_Project.Areas.Identity.Data.DbContexts
 @inject UserContext _context
 @model Category
-
 @{
 	Layout = "_AdminsLayout";
 	var parentCategories = _context.ParentCategories.ToList();

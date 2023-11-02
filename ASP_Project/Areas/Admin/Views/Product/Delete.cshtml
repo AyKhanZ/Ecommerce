@@ -4,9 +4,9 @@
 @model Product
 @{
 	ViewData["Title"] = "Delete category";
-	var categories = _context.Categories.ToList();
-}
-
+	var categories = _context.Categories.ToList();  
+	<link rel="stylesheet" href="~/css/productDelete.css">
+} 
 <form method="post" asp-action="Delete">
 	<input asp-for="Id" hidden />
 	<div class="border p-3 mt-4">
@@ -14,36 +14,94 @@
 			<h2 class="text-primary">Delete Product</h2>
 			<hr />
 		</div>
-		<div class="mb-3">
-			<label asp-for="Make"></label>
-			<input asp-for="Make" disabled class="form-control" />
+		<div class="container">
+			<div class="row">
+				<div class="col">
+					<div class="image-container">
+						<img class="img-fluid img" src="data:image/jpeg;base64, @Convert.ToBase64String(Model.ProductImages.FirstOrDefault()?.ImageData!)" class="d-block w-100" alt="Product Image">
+					</div>
+					<div class="mb-3">
+						<label asp-for="Price"></label>
+						<input asp-for="Price" disabled class="form-control" />
+					</div>
+					<div class="mb-3">
+						<label asp-for="InternalMemory"></label>
+						<select asp-for="InternalMemory" disabled class="form-select">
+							<option value="-1" selected>Select internal memory</option>
+							<option value="64 GB">64 GB</option>
+							<option value="128 GB">128 GB</option>
+							<option value="256 GB">256 GB</option>
+							<option value="512 GB">512 GB</option>
+							<option value="1 TB">1 TB</option>
+						</select>
+					</div>
+					<div class="mb-3">
+						<label asp-for="RAM"></label>
+						<select asp-for="RAM" disabled class="form-select">
+							<option value="-1" selected>Select RAM</option>
+							<option value="4 GB">4 GB</option>
+							<option value="6 GB">6 GB</option>
+							<option value="8 GB">8 GB</option>
+						</select>
+					</div>
+					<div class="mb-3">
+						<label asp-for="Quantity"></label>
+						<input asp-for="Quantity" disabled class="form-control" />
+					</div>
+					<div class="mb-3">
+						<label asp-for="Color"></label>
+						<select asp-for="Color" disabled class="form-select">
+							@foreach (var color in Enum.GetValues(typeof(Color)))
+							{
+								<option value="@color">@color</option>
+							}
+						</select>
+					</div>
+				</div>
+				<div class="col">
+					<div class="mb-3">
+						<label asp-for="Producer"></label>
+						<input asp-for="Producer" disabled class="form-control" />
+					</div>
+					<div class="mb-3">
+						<label asp-for="ProcessorName">Processor name</label>
+						<input asp-for="ProcessorName" disabled class="form-control" />
+					</div>
+					<div class="mb-3">
+						<label asp-for="OperatingSystemEnum">Operating system</label>
+						<input asp-for="OperatingSystemEnum" disabled class="form-control" />
+					</div>
+					<div class="mb-3">
+						<label asp-for="NFC">NFC</label>
+						<input asp-for="NFC" disabled class="form-control" />
+					</div>
+					<div class="mb-3">
+						<label asp-for="BatteryCapacity">Battery capacity</label>
+						<input asp-for="BatteryCapacity" disabled class="form-control" />
+					</div>
+					<div class="mb-3">
+						<label asp-for="NumberOfSIMCards">Number of SIM cards</label>
+						<input asp-for="NumberOfSIMCards" disabled class="form-control" />
+					</div>
+					<div class="mb-3">
+						<label asp-for="NuclearNumber">Nuclear number</label>
+						<input asp-for="NuclearNumber" disabled class="form-control" />
+					</div>
+					<div class="mb-3"> 
+						<label asp-for="CategoryId">Category</label>
+ 						<select asp-for="CategoryId" disabled class="form-select">
+							@foreach (var category in categories)
+							{
+								<option value="@category.Id">@category.Name</option>
+							}
+						</select>
+					</div>
+					<button type="submit" class="btn btn-danger" style="width:150px">Delete</button>
+					<a asp-controller="Product" asp-action="Index" class="btn btn-secondary" style="width:150px">
+						Back to List
+					</a>
+				</div>
+			</div>
 		</div>
-		<div class="mb-3">
-			<label asp-for="Description"></label>
-			<input asp-for="Description" disabled class="form-control" />
-		</div>
-		<div class="mb-3">
-			<label asp-for="Gender"></label>
-			<input asp-for="Gender" disabled class="form-control" />
-		</div>
-		<div class="mb-3">
-			<label asp-for="Fabric"></label>
-			<input asp-for="Fabric" disabled class="form-control" />
-		</div>
-		<div class="mb-3">
-			@* mojno ubrat *@
-			<select asp-for="CategoryId" disabled class="form-select">
-				<option value="" selected>Select a category</option>
-				@foreach (var category in categories)
-				{
-					<option value="@category.Id">@category.Name</option>
-				}
-			</select>
-			<span asp-validation-for="CategoryId" class="text-danger"></span>
-		</div>
-		<button type="submit" class="btn btn-danger" style="width:150px">Delete</button>
-		<a asp-controller="Product" asp-action="Index" class="btn btn-secondary" style="width:150px">
-			Back to List
-		</a>
 	</div>
 </form> 

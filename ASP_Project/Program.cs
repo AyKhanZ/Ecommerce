@@ -24,7 +24,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddDefaultTokenPro
 
 builder.Services.AddScoped<IValidator<Category>, CategoryValidator>();
 builder.Services.AddScoped<IValidator<ParentCategory>, ParentCategoryValidator>();
-builder.Services.AddScoped<IValidator<Product>, ProductValidator>();
+builder.Services.AddScoped<IValidator<Product>, ProductValidator>(); 
 builder.Services.AddScoped<IValidator<Order>, OrderValidator>();
 
 var app = builder.Build();

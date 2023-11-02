@@ -16,6 +16,4 @@ public class ApplicationUser : IdentityUser
     public List<OnlinePayment>? OnlinePayments { get; set; }
     public List<Order>? Orders { get; set; }
     public List<Address>? Addresses { get; set; }
-
 }
-

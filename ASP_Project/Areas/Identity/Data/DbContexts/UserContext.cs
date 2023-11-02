@@ -9,8 +9,7 @@ namespace ASP_Project.Areas.Identity.Data.DbContexts;
 public class UserContext : IdentityDbContext<ApplicationUser>
 {
     public DbSet<Category> Categories { get; set; }
-    public DbSet<Product> Products { get; set; }
-    public DbSet<ProductVariation> ProductVariations { get; set; }
+    public DbSet<Product> Products { get; set; } 
     public DbSet<Address> Addresses { get; set; }
     //public DbSet<Favorite> Favorites { get; set; }
     public DbSet<OnlinePayment> OnlinePayments { get; set; }
@@ -55,44 +54,34 @@ public class UserContext : IdentityDbContext<ApplicationUser>
             entity.HasKey(p => p.Id);
             entity.Property(p => p.Id).ValueGeneratedOnAdd();
             entity.Property(p => p.Name).IsRequired().HasMaxLength(50);
-            entity.Property(p => p.Make).IsRequired().HasMaxLength(25);
-            entity.Property(p => p.Gender).IsRequired().HasDefaultValue(Gender.Unisex);
-            entity.Property(p => p.Fabric).HasMaxLength(100);
-            entity.Property(p => p.Description).HasMaxLength(1000); // Change 250
-            
-            entity.HasOne(p => p.Category)
+            entity.Property(pv => pv.Price).IsRequired();
+            entity.Property(pv => pv.InternalMemory).IsRequired().HasMaxLength(100);
+            entity.Property(pv => pv.RAM).IsRequired().HasMaxLength(100);
+            entity.Property(pv => pv.Color).IsRequired();
+            entity.Property(pv => pv.Discount).HasColumnType("smallint");
+            entity.Property(p => p.Producer).IsRequired();
+            entity.Property(p => p.ProcessorName).IsRequired();
+            entity.Property(p => p.OperatingSystemEnum).IsRequired();
+			entity.Property(p => p.NFC).IsRequired().HasDefaultValue(true);
+            entity.Property(p => p.BatteryCapacity).IsRequired().HasMaxLength(100);
+            entity.Property(p => p.NumberOfSIMCards).IsRequired();
+            entity.Property(p => p.NuclearNumber).IsRequired();
+
+			entity.HasOne(p => p.Category)
                 .WithMany(c => c.Products)
                 .HasForeignKey(p => p.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
-        });
+        }); 
         
         builder.Entity<ProductImage>(entity =>
         {
             entity.HasKey(pi => pi.Id);
             entity.Property(pi => pi.Id).ValueGeneratedOnAdd();
-            entity.Property(pi => pi.Url).HasMaxLength(255);
             entity.Property(pi => pi.ImageData);
             
-            entity.HasOne(pi => pi.ProductVariation)
+            entity.HasOne(pi => pi.Product)
                 .WithMany(p => p.ProductImages)
-                .HasForeignKey(pi => pi.ProductVariationId)
-                .OnDelete(DeleteBehavior.Cascade);
-        });
-        
-        builder.Entity<ProductVariation>(entity =>
-        {
-            entity.HasKey(pv => pv.Id);
-            entity.Property(pv => pv.Id).ValueGeneratedOnAdd();
-            entity.Property(pv => pv.Name).IsRequired();
-            entity.HasIndex(pv => pv.Name).IsUnique();
-            entity.Property(pv => pv.Price).IsRequired();
-            entity.Property(pv => pv.Size).IsRequired();
-            entity.Property(pv => pv.Color).IsRequired();
-            entity.Property(pv => pv.Discount).HasColumnType("smallint");
-
-            entity.HasOne(pv => pv.Product)
-                .WithMany(p => p.ProductVariations)
-                .HasForeignKey(pv => pv.ProductId)
+                .HasForeignKey(pi => pi.ProductId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
         
@@ -169,14 +158,14 @@ public class UserContext : IdentityDbContext<ApplicationUser>
         
         builder.Entity<ShoppingCartItem>(entity =>
         {
-            entity.HasKey(sci => sci.ProductVariationId);
+            entity.HasKey(sci => sci.ProductId);
             
             entity.Property(sci => sci.Quantity).IsRequired();
             entity.Property(sci => sci.TotalPrice).IsRequired();
             
-            entity.HasOne(sci => sci.ProductVariation)
+            entity.HasOne(sci => sci.Product)
                 .WithOne(pv => pv.ShoppingCartItem)
-                .HasForeignKey<ShoppingCartItem>(sci => sci.ProductVariationId)
+                .HasForeignKey<ShoppingCartItem>(sci => sci.ProductId)
                 .OnDelete(DeleteBehavior.Restrict);
             
             entity.HasOne(sci => sci.ShoppingCart)

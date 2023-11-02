@@ -37,19 +37,17 @@ public class CategoryController : Controller
     public async Task<IActionResult> Create(Category? category)
     {
         ModelState.Clear();
-
         var result = await _categoryValidator.ValidateAsync(category);
 
-        if (result.IsValid)
+        if (!result.IsValid)
         {
-            await _dbContext.Categories.AddAsync(category);
-            await _dbContext.SaveChangesAsync();
-            TempData["success"] = "Category created succsessfully";
-            return RedirectToAction("Index", "Category");
+            result.AddToModelState(ModelState);
+            return View(category);
         }
-        result.AddToModelState(ModelState);
-
-        return View(category);
+        await _dbContext.Categories.AddAsync(category);
+        await _dbContext.SaveChangesAsync();
+        TempData["success"] = "Category created succsessfully";
+        return RedirectToAction("Index", "Category");
     }
 
 
@@ -73,14 +71,14 @@ public class CategoryController : Controller
         {
             result.AddToModelState(ModelState);
             return View(category);
-        } 
+        }
         var existingCategory = _dbContext.Categories.FirstOrDefault(c => c.Id == category.Id); // Find the existing category by its key value
 
         if (existingCategory == null) return NotFound();
 
         // Update the properties of the existing entity
         existingCategory.Name = category.Name; // Update other properties as needed
-         
+
         await _dbContext.SaveChangesAsync(); // If you have navigation properties, you can update them as well.Save changes
 
         TempData["success"] = "Category updated successfully";

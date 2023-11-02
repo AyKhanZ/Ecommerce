@@ -1,123 +1,160 @@
-﻿using ASP_Project.Areas.Identity.Data.DbContexts;
-using ASP_Project.Areas.Identity.Data.Extensions;
-using ASP_Project.Areas.Identity.Data.Models;
-using FluentValidation;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿//using ASP_Project.Areas.Identity.Data.DbContexts;
+//using ASP_Project.Areas.Identity.Data.Extensions;
+//using ASP_Project.Areas.Identity.Data.Models;
+//using FluentValidation;
+//using Microsoft.AspNetCore.Authorization;
+//using Microsoft.AspNetCore.Mvc;
+//using Microsoft.EntityFrameworkCore;
 
-[Area("Admin")]
-[Authorize(Roles = "Admin")]
+//namespace ASP_Project.Areas.Admin.Controllers;
+//[Area("Admin")]
+//[Authorize(Roles = "Admin")]
+//public class ProductVariationController : Controller
+//{
+//    private IValidator<ProductVariation> _productVariationValidator { get; set; }
 
-public class ProductVariationController : Controller
-{
-    private readonly UserContext _dbContext;
+//    private readonly UserContext _dbContext;
 
-    public ProductVariationController(UserContext context)
-    {
-        _dbContext = context;
+//    public ProductVariationController(UserContext context, IValidator<ProductVariation> validator)
+//    {
+//        _dbContext = context;
+//        _productVariationValidator = validator;
+//    }
 
-    }
+//    public async Task<IActionResult> Index()
+//    {
+//        var productVariations = await _dbContext.ProductVariations.ToListAsync();
+//        var productImages = await _dbContext.ProductImages.ToListAsync();
 
+//        foreach (var productVariation in productVariations)
+//        {
+//            productVariation.Product = await _dbContext.Products.FirstOrDefaultAsync(p => p.Id == productVariation.ProductId);
+//        }
 
-    public IActionResult Index()
-    {
-        var productVariations = _dbContext.ProductVariations.ToList();
-        var productImages = _dbContext.ProductImages.ToList();
+//        ViewBag.ProductImages = productImages;
 
-        foreach (var productVariation in productVariations)
-        {
-            productVariation.Product = _dbContext.Products.FirstOrDefault(p => p.Id == productVariation.ProductId);
-        }
+//        return View(productVariations);
+//    }
+//    public IActionResult Create()
+//    {
+//        return View();
+//    }
 
-        ViewBag.ProductImages = productImages;
+//    [HttpPost]
+//    [ValidateAntiForgeryToken]
+//    public async Task<IActionResult> Create(int productId, ProductVariation productVariation, IFormFileCollection ProductImages)
+//    {
+//        ModelState.Clear(); 
 
-        if (productVariations != null)
-        {
-            return View(productVariations);
-        }
-        throw new ArgumentException("Product is not valid...");
-    }
-    public IActionResult Create()
-    {
-        return View();
-    }
+//        productVariation.ProductId = productId;
 
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(int productId, ProductVariation productVariation, IFormFileCollection files)
-    {
-        productVariation.ProductId = productId;
+//        productVariation.Name = $"{productVariation.Color} {productVariation.RAM} {productVariation.InternalMemory}";
+         
+//        List<ProductImage> productImages = new List<ProductImage>();
 
+//        foreach (var file in ProductImages)
+//        {
+//            if (file != null && file.Length > 0)
+//            {
+//                var productImage = new ProductImage();
 
-        Console.WriteLine(productVariation);
+//                using (var memoryStream = new MemoryStream())
+//                {
+//                    await file.CopyToAsync(memoryStream);
+//                    var imageBytes = memoryStream.ToArray();
+//                    productImage = new ProductImage
+//                    {
+//                        ImageData = imageBytes,
+//                        ProductVariationId = productVariation.Id
+//                    };
+//                    productImages.Add(productImage);
+//                }
+//            }
+//            else return NotFound();
+//        }
 
-        _dbContext.ProductVariations.Add(productVariation);
-        _dbContext.SaveChanges();
+//        productVariation.ProductImages = productImages;
+//        var result = await _productVariationValidator.ValidateAsync(productVariation);
 
-        foreach (var file in files)
-        {
-            if (file != null && file.Length > 0)
-            {
-                using (var memoryStream = new MemoryStream())
-                {
-                    await file.CopyToAsync(memoryStream);
-                    var imageBytes = memoryStream.ToArray();
+//        if (!result.IsValid)
+//        {
+//            result.AddToModelState(ModelState);
+//            return View(productVariation);
+//        }
 
-                    var productImage = new ProductImage
-                    {
-                        ImageData = imageBytes,
-                        Url = "https://i.pinimg.com/originals/bb/73/ab/bb73ab989322760bcf3c0f64e549f7a3.jpg", //delete it 
-                        ProductVariationId = productVariation.Id
-                    };
+//        await _dbContext.ProductVariations.AddAsync(productVariation);
+//        await _dbContext.SaveChangesAsync();
 
-                    _dbContext.ProductImages.Add(productImage);
+//        var newProductImages = productImages.Select(pi => new ProductImage
+//        {
+//            ImageData = pi.ImageData,
+//            ProductVariationId = pi.ProductVariationId
+//        }).ToList(); // Создаем новую коллекцию
 
+//        await _dbContext.ProductImages.AddRangeAsync(newProductImages);
+//        await _dbContext.SaveChangesAsync();
 
-                    _dbContext.SaveChanges();
+//        TempData["success"] = "Product variation created succsessfully";
+//        return RedirectToAction("Index", "ProductVariation");
+//    }
 
-                }
-            }
-            else
-                return NotFound();
-        }
-        return View(productVariation);
+//    public async Task<IActionResult> Edit(int id)
+//    {
+//        var productVariation = await _dbContext.ProductVariations
+//            .Include(pv => pv.ProductImages)
+//            .FirstOrDefaultAsync(pv => pv.Id == id);
 
-    }
+//        if (productVariation == null) return NotFound();
 
-    public IActionResult Edit(int id)
-    {
-        var productVariation = _dbContext.ProductVariations.Find(id);
+//        ViewBag.ProductImages = productVariation.ProductImages;
+//        return View(productVariation);
+//    }
 
-        if (productVariation == null)
-        {
-            return NotFound();
-        }
+//    [HttpPost]
+//    [ValidateAntiForgeryToken]
+//    public async Task<IActionResult> Edit(ProductVariation productVariation, IFormFileCollection files)
+//    {
+//        if (true) // add validation
+//        {
+//            var existingProductVariation = await _dbContext.ProductVariations
+//                .FirstOrDefaultAsync(pv => pv.Id == productVariation.Id);
 
-        return View(productVariation);
-    }
+//            if (existingProductVariation == null) return NotFound();
 
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(ProductVariation productVariation)
-    {
-        //var result = await _productValidator.ValidateAsync(product);
+//            existingProductVariation.Price = productVariation.Price;
+//            existingProductVariation.Quantity = productVariation.Quantity;
+//            existingProductVariation.Discount = productVariation.Discount;
 
-        //if (result.IsValid)
-        //{
-        //	_dbContext.Products.Update(product);
-        //	_dbContext.SaveChanges();
-        //	TempData["success"] = "Product updated succsessfully";
+//            foreach (var file in files)
+//            {
+//                if (file != null && file.Length > 0)
+//                {
+//                    using (var memoryStream = new MemoryStream())
+//                    {
+//                        await file.CopyToAsync(memoryStream);
+//                        var imageBytes = memoryStream.ToArray();
 
-        //	return RedirectToAction("Index", "Product");
-        //}
-        //result.AddToModelState(this.ModelState);
+//                        var productImage = new ProductImage
+//                        {
+//                            ImageData = imageBytes,
+//                            ProductVariationId = existingProductVariation.Id
+//                        };
 
-        //return View(product);
-        _dbContext.ProductVariations.Update(productVariation);
-        _dbContext.SaveChanges();
-        TempData["success"] = "Product Variation updated succsessfully";
+//                        await _dbContext.ProductImages.AddAsync(productImage);
+//                        existingProductVariation.ProductImages.Add(productImage);
+//                    }
+//                }
+//            }
 
-        return View(); //RedirectToAction("Index", "ProductVaritation");
-    }
-}
+//            _dbContext.ProductVariations.Update(existingProductVariation);
+//            await _dbContext.SaveChangesAsync();
+//            var productImages = await _dbContext.ProductImages.ToListAsync();
+//            ViewBag.ProductImages = productImages;
+//            TempData["success"] = "Product Variation updated successfully";
+
+//            return View(productVariation);
+
+//        }
+
+//    }
+//}

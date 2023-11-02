@@ -1,147 +1,62 @@
 ﻿using ASP_Project.Areas.Identity.Data.DbContexts;
 using ASP_Project.Areas.Identity.Data.Models;
 using FluentValidation;
-using System.Net;
 using System.Text.RegularExpressions;
 
-namespace ASP_Project.Areas.Identity.Data.Validators
+namespace ASP_Project.Areas.Identity.Data.Validators;
+public class ProductValidator : AbstractValidator<Product>
 {
-    public class ProductValidator : AbstractValidator<Product>
-    {
-        private readonly static string makeMsg;
-        // private readonly static string imageURLMsg;
-        private readonly static string fabricMsg;
-        private readonly static string descriptionMsg;
+	private readonly static string nameMsg; 
+	private readonly static string numberOfSIMCardsMsg;
+	private readonly static string nuclearNumberMsg;
+	private readonly static string categoryMsg;
+	private readonly static string priceMsg;
+	private readonly static string internalMemoryMsg;
+	private readonly static string ramMsg;
+	private readonly static string quantityMsg;
+	private readonly static string imagesMsg;
 
-        private readonly UserContext _dbContext;
-
-        public ProductValidator(UserContext userContext)
-        {
-            _dbContext = userContext;
-            RuleFor(p => p.Make).NotEmpty().Must(CheckMake).WithMessage(makeMsg).Length(0, 50);
-            // RuleFor(p => p.ImageURLs).Must(CheckImageURL).NotNull().WithMessage(imageURLMsg);
-            RuleFor(p => p.Fabric).NotEmpty().Must(CheckFabric).WithMessage(fabricMsg).Length(0, 50); //Min lenght Must be changed
-            RuleFor(p => p.Description).NotEmpty().Must(CheckDescription).WithMessage(descriptionMsg).Length(0, 100); //Min lenght must be changed
-
-        }
-        static ProductValidator()
-        {
-            makeMsg = "Product\'s make must be between 1 and 50 characters and contain only letters!";
-            // imageURLMsg = "Product\'s image is required!";
-            descriptionMsg = "Product\'s description must be between 1 and 100 characters!";
-            fabricMsg = "Product\'s fabric must be between 1 and 100 characters!";
-        }
-        public static bool CheckMake(string? make)
-        {
-            
-            Regex re = new(@"^[A-Za-z]");
-            return make != null && re.IsMatch(make);
-        }
-        public static bool CheckDescription(string? description)
-        {
-            Regex re = new(@"^[a-zA-Z0-9!.\-;:,\s]+$");
-            return description != null && re.IsMatch(description);
-        }
-        
-        public static bool CheckFabric(string? fabric)
-        {
-            Regex re = new(@"^[a-zA-Z0-9!.\-;:,\s]+$");
-            return  fabric != null && re.IsMatch(fabric);
-        }
-        
-        // public static bool CheckImageURL(List<ProductImage> productImages)
-        // {
-        //     foreach (var productImage in productImages)
-        //     {
-        //         byte[] imageBytes = productImage.ImageData; // Get the image binary data
-        //
-        //         if (imageBytes == null || imageBytes.Length == 0)
-        //         {
-        //             return false; // Return false if any image data is null or empty
-        //         }
-        //
-        //         // You can perform additional checks on the image data if needed.
-        //         // For example, you might check the image format or dimensions.
-        //
-        //         // Here, you can add any additional checks based on the image data.
-        //
-        //         // For example, you could check the image format using a library like ImageSharp:
-        //         // if (!IsValidImageFormat(imageBytes))
-        //         // {
-        //         //     return false;
-        //         // }
-        //     }
-        //
-        //     return true; // Return true if all image data is valid
-        // }
-        
-        // public static bool CheckImageURL(List<ProductImage> imageUrls)
-        // {
-        //     foreach (var productImage in imageUrls)
-        //     {
-        //         string imageUrl = productImage.Url; // Assuming ImageUrl is the property containing the URL.
-        //
-        //         HttpWebRequest request = (HttpWebRequest)WebRequest.Create(imageUrl);
-        //         request.Method = "HEAD";
-        //
-        //         try
-        //         {
-        //             using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-        //             {
-        //                 if (response.StatusCode != HttpStatusCode.OK)
-        //                 {
-        //                     return false; // Return false if any URL does not return HttpStatusCode.OK
-        //                 }
-        //             }
-        //         }
-        //         catch (WebException)
-        //         {
-        //             // Handle exceptions, e.g., URL not found or unreachable
-        //             return false;
-        //         }
-        //     }
-        //
-        //     return true; // Return true if all URLs return HttpStatusCode.OK
-        // }
-        // public static bool CheckImageURL(List<ProductImage> imageUrls)
-        // {
-        //     foreach (var imageUrl in imageUrls)
-        //     {
-        //         HttpWebRequest request = (HttpWebRequest)WebRequest.Create(imageUrl);
-        //         request.Method = "HEAD";
-        //
-        //         try
-        //         {
-        //             using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-        //             {
-        //                 if (response.StatusCode != HttpStatusCode.OK)
-        //                 {
-        //                     return false; // Return false if any URL does not return HttpStatusCode.OK
-        //                 }
-        //             }
-        //         }
-        //         catch (WebException)
-        //         {
-        //             // Handle exceptions, e.g., URL not found or unreachable
-        //             return false;
-        //         }
-        //     }
-        //
-        //     return true; // Return true if all URLs return HttpStatusCode.OK
-        //     // foreach (var imageUrl in imageUrls)
-        //     // {
-        //     //     HttpWebRequest request = (HttpWebRequest)WebRequest.Create(imageUrl);
-        //     //     request.Method = "HEAD";
-        //     //     using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-        //     //     {
-        //     //         if (response.StatusCode == HttpStatusCode.OK)
-        //     //         {
-        //     //             return true;
-        //     //         }
-        //     //         return false;
-        //     //     }
-        //     // }
-        //     //
-        // }
-    }
+	public ProductValidator(UserContext userContext)
+	{
+		RuleFor(p => p.Name).Must(CheckName).WithMessage(nameMsg).Length(0, 50);
+		RuleFor(p => p.NumberOfSIMCards).Must((ns) => ns > 0).WithMessage(numberOfSIMCardsMsg);  
+		RuleFor(p => p.NuclearNumber).Must((nn) => nn > 0 ).WithMessage(nuclearNumberMsg);   
+		RuleFor(c => c.CategoryId)
+			.Must((categoryId) => categoryId >= 0) // Assuming the value -1 represents "Select a category"
+			.WithMessage(categoryMsg);
+		RuleFor(pv => pv.Price).Must((pv) => pv > 0).WithMessage(priceMsg);
+		RuleFor(pv => pv.InternalMemory)
+			.Must((im) => im != "-1")
+			.WithMessage(internalMemoryMsg);
+		RuleFor(pv => pv.RAM)
+			.Must((ram) => ram != "-1")
+			.WithMessage(ramMsg);
+		RuleFor(pv => pv.Quantity).Must((pv) => pv > 0).WithMessage(quantityMsg);
+		RuleFor(pv => pv.ProductImages)
+			.Must(CheckImages)
+			.WithMessage(imagesMsg);
+	}
+	static ProductValidator()
+	{
+		nameMsg = "Product\'s name must be between 1 and 50 characters and contain only letters and digits!";
+		numberOfSIMCardsMsg = "Choice is required and must be possitive!";
+		nuclearNumberMsg = "Choice is required and must be possitive!";
+		categoryMsg = "You must select category!";
+		priceMsg = "Choice is required and must be possitive!";
+		internalMemoryMsg = "You must select category!";
+		ramMsg = "You must select category!";
+		quantityMsg = "Choice is required and must be possitive!";
+		imagesMsg = "Choose images!";
+	}
+	public static bool CheckName(string? name)
+	{
+		Regex re = new(@"^[A-Za-z]");
+		return name != null && re.IsMatch(name) && name != "";
+	}
+	private bool CheckImages(List<ProductImage> productImages)
+	{
+		var a = productImages;
+		if (productImages != null && productImages.Count > 0) return true;
+		return false;
+	}
 }

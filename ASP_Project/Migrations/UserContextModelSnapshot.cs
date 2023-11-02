@@ -344,33 +344,61 @@ namespace ASP_Project.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<string>("Fabric")
+                    b.Property<string>("BatteryCapacity")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("Gender")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(2);
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Make")
+                    b.Property<int>("Color")
+                        .HasColumnType("int");
+
+                    b.Property<short?>("Discount")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("InternalMemory")
                         .IsRequired()
-                        .HasMaxLength(25)
-                        .HasColumnType("nvarchar(25)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool?>("NFC")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("NuclearNumber")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NumberOfSIMCards")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OperatingSystemEnum")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("ProcessorName")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Producer")
+                        .HasColumnType("int");
+
+                    b.Property<long>("Quantity")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("RAM")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -390,59 +418,14 @@ namespace ASP_Project.Migrations
                     b.Property<byte[]>("ImageData")
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<int>("ProductVariationId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Url")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductVariationId");
-
-                    b.ToTable("ProductImages");
-                });
-
-            modelBuilder.Entity("ASP_Project.Areas.Identity.Data.Models.ProductVariation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Color")
-                        .HasColumnType("int");
-
-                    b.Property<short?>("Discount")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<long>("Quantity")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Size")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductVariations");
+                    b.ToTable("ProductImages");
                 });
 
             modelBuilder.Entity("ASP_Project.Areas.Identity.Data.Models.ShoppingCart", b =>
@@ -463,7 +446,7 @@ namespace ASP_Project.Migrations
 
             modelBuilder.Entity("ASP_Project.Areas.Identity.Data.Models.ShoppingCartItem", b =>
                 {
-                    b.Property<int>("ProductVariationId")
+                    b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<short>("Quantity")
@@ -476,7 +459,7 @@ namespace ASP_Project.Migrations
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.HasKey("ProductVariationId");
+                    b.HasKey("ProductId");
 
                     b.HasIndex("ShoppingCartId");
 
@@ -711,19 +694,8 @@ namespace ASP_Project.Migrations
 
             modelBuilder.Entity("ASP_Project.Areas.Identity.Data.Models.ProductImage", b =>
                 {
-                    b.HasOne("ASP_Project.Areas.Identity.Data.Models.ProductVariation", "ProductVariation")
-                        .WithMany("ProductImages")
-                        .HasForeignKey("ProductVariationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ProductVariation");
-                });
-
-            modelBuilder.Entity("ASP_Project.Areas.Identity.Data.Models.ProductVariation", b =>
-                {
                     b.HasOne("ASP_Project.Areas.Identity.Data.Models.Product", "Product")
-                        .WithMany("ProductVariations")
+                        .WithMany("ProductImages")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -744,9 +716,9 @@ namespace ASP_Project.Migrations
 
             modelBuilder.Entity("ASP_Project.Areas.Identity.Data.Models.ShoppingCartItem", b =>
                 {
-                    b.HasOne("ASP_Project.Areas.Identity.Data.Models.ProductVariation", "ProductVariation")
+                    b.HasOne("ASP_Project.Areas.Identity.Data.Models.Product", "Product")
                         .WithOne("ShoppingCartItem")
-                        .HasForeignKey("ASP_Project.Areas.Identity.Data.Models.ShoppingCartItem", "ProductVariationId")
+                        .HasForeignKey("ASP_Project.Areas.Identity.Data.Models.ShoppingCartItem", "ProductId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -756,7 +728,7 @@ namespace ASP_Project.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("ProductVariation");
+                    b.Navigation("Product");
 
                     b.Navigation("ShoppingCart");
                 });
@@ -845,11 +817,6 @@ namespace ASP_Project.Migrations
                 });
 
             modelBuilder.Entity("ASP_Project.Areas.Identity.Data.Models.Product", b =>
-                {
-                    b.Navigation("ProductVariations");
-                });
-
-            modelBuilder.Entity("ASP_Project.Areas.Identity.Data.Models.ProductVariation", b =>
                 {
                     b.Navigation("ProductImages");
 
