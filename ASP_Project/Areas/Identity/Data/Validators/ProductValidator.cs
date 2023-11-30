@@ -1,12 +1,13 @@
 ﻿using ASP_Project.Areas.Identity.Data.DbContexts;
 using ASP_Project.Areas.Identity.Data.Models;
 using FluentValidation;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace ASP_Project.Areas.Identity.Data.Validators;
 public class ProductValidator : AbstractValidator<Product>
 {
-	private readonly static string nameMsg; 
+	private readonly static string nameMsg;
 	private readonly static string numberOfSIMCardsMsg;
 	private readonly static string nuclearNumberMsg;
 	private readonly static string categoryMsg;
@@ -15,12 +16,13 @@ public class ProductValidator : AbstractValidator<Product>
 	private readonly static string ramMsg;
 	private readonly static string quantityMsg;
 	private readonly static string imagesMsg;
+	private readonly static string imagesMsgFormat;
 
 	public ProductValidator(UserContext userContext)
 	{
 		RuleFor(p => p.Name).Must(CheckName).WithMessage(nameMsg).Length(0, 50);
-		RuleFor(p => p.NumberOfSIMCards).Must((ns) => ns > 0).WithMessage(numberOfSIMCardsMsg);  
-		RuleFor(p => p.NuclearNumber).Must((nn) => nn > 0 ).WithMessage(nuclearNumberMsg);   
+		RuleFor(p => p.NumberOfSIMCards).Must((ns) => ns > 0).WithMessage(numberOfSIMCardsMsg);
+		RuleFor(p => p.NuclearNumber).Must((nn) => nn > 0).WithMessage(nuclearNumberMsg);
 		RuleFor(c => c.CategoryId)
 			.Must((categoryId) => categoryId >= 0) // Assuming the value -1 represents "Select a category"
 			.WithMessage(categoryMsg);
@@ -54,9 +56,7 @@ public class ProductValidator : AbstractValidator<Product>
 		return name != null && re.IsMatch(name) && name != "";
 	}
 	private bool CheckImages(List<ProductImage> productImages)
-	{
-		var a = productImages;
-		if (productImages != null && productImages.Count > 0) return true;
-		return false;
+	{ 
+		return productImages != null && productImages.Count > 0; 
 	}
 }

@@ -8,8 +8,8 @@
     <script src="https://kit.fontawesome.com/dbed6b6114.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <header> 
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark flex-wrap">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="Customer" asp-action="Index" asp-controller="Home">ECommerce</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
@@ -18,40 +18,21 @@
                 <div class="collapse navbar-collapse" id="navbarColor01">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link active" asp-area="Customer" asp-action="Index" asp-controller="Home">
-                                Home
-                            </a>
+                            <a class="nav-link text-light" asp-area="Customer" asp-action="Index" asp-controller="Home"> Home </a>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Content Management</a>
-                       
-                            <div class="dropdown-menu">
-                                 @if (ViewContext.RouteData.Values["controller"].ToString() == "Category")
-                                 {
-                                     <a class="dropdown-item" asp-area="Admin" asp-controller="Category" asp-action="Index">Category</a>
-                                     <a class="dropdown-item" asp-area="Admin" asp-controller="Category" asp-action="Create">Create category</a>
-                                 }
-                                @if (ViewContext.RouteData.Values["controller"].ToString() == "ParentCategory")
-                                {
-                                    <a class="dropdown-item" asp-area="Admin" asp-controller="ParentCategory" asp-action="Index">Parent category</a>
-                                    <a class="dropdown-item" asp-area="Admin" asp-controller="ParentCategory" asp-action="Create">Create parent category</a>
-                                }
-                                <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">Create User</a>
-                            </div>
-                            </li>
-                        @* <li class="nav-item"> *@
-                        @*     <a class=nav-link asp-area="Admin" asp-controller="Order" asp-action="Index"> *@
-                        @*         Manage Order *@
-                        @*     </a> *@
-                        @* </li> *@
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="Admin" asp-controller="ParentCategory" asp-action="Index">Parent Categories</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="Admin" asp-controller="Category" asp-action="Index">Categories</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="Admin" asp-controller="Product" asp-action="Index">Products</a>
+                        </li>
                     </ul>
                     <partial name="_LoginPartial" />
-                    <form class="d-flex">
-                        <input class="form-control me-sm-2" type="search" placeholder="Search">
-                        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-                    </form>
                 </div>
-            </div>
+            </div> 
         </nav>
     </header>
 

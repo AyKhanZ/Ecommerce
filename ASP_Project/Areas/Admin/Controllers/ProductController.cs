@@ -23,11 +23,11 @@ public class ProductController : Controller
 
 	public async Task<IActionResult> Index()
 	{
-        var products = await _dbContext.Products
+		var products = await _dbContext.Products
 			.Include(v => v.ProductImages)
 			.Include(p => p.Category).ToListAsync();
 		return View(products);
-	} 
+	}
 
 	public IActionResult Create()
 	{
@@ -60,13 +60,13 @@ public class ProductController : Controller
 			else return NotFound();
 		}
 
-		product.ProductImages = productImages;  
+		product.ProductImages = productImages;
 
 		var result = await _productValidator.ValidateAsync(product);
 
 		if (!result.IsValid)
 		{
-			result.AddToModelState(ModelState);
+			result.AddToModelState(ModelState);  
 			return View(product);
 		}
 
@@ -89,19 +89,58 @@ public class ProductController : Controller
 
 	[HttpPost]
 	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> Edit(Product product)
+	public async Task<IActionResult> Edit(Product product, IFormFileCollection ProductImages)
 	{
-		ModelState.Clear(); 
+		ModelState.Clear();
+
+		List<ProductImage> productImages = new();
+		foreach (var file in ProductImages)
+		{
+			if (file != null && file.Length > 0)
+			{
+				var productImage = new ProductImage();
+
+				using (var memoryStream = new MemoryStream())
+				{
+					await file.CopyToAsync(memoryStream);
+					var imageBytes = memoryStream.ToArray();
+					productImage.ImageData = imageBytes;
+					productImages.Add(productImage);
+				}
+			}
+		}
+		product.ProductImages = _dbContext.ProductImages.Where(pi => pi.ProductId == product.Id).ToList();
+
 		var result = await _productValidator.ValidateAsync(product);
-		var p = product;
+
 		if (!result.IsValid)
 		{
 			result.AddToModelState(ModelState);
+			foreach (var image in product.ProductImages)
+			{
+				_dbContext.ProductImages.Remove(image);
+			}
+			product.ProductImages.Clear();
 			return View(product);
 		}
+
+		if (ProductImages.Count() == 0) return RedirectToAction("Index", "Product");
+
+		foreach (var image in product.ProductImages)
+		{
+			_dbContext.ProductImages.Remove(image);
+		}
+
+		product.ProductImages.Clear();
+
+		await _dbContext.SaveChangesAsync();
+
+		product.ProductImages = productImages;
+
 		_dbContext.Products.Update(product);
 		await _dbContext.SaveChangesAsync();
-		TempData["success"] = "Product updated succsessfully";
+
+		TempData["success"] = "Product updated successfully";
 		return RedirectToAction("Index", "Product");
 	}
 
@@ -112,7 +151,7 @@ public class ProductController : Controller
 
 		if (product == null) return NotFound();
 		product.ProductImages = await _dbContext.ProductImages.Where(pi => pi.ProductId == id).ToListAsync();
-		
+
 		return View(product);
 	}
 
@@ -128,5 +167,5 @@ public class ProductController : Controller
 		TempData["success"] = "Product was deleted succsessfully";
 
 		return RedirectToAction("Index");
-	} 
+	}
 }
