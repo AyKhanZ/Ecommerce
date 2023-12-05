@@ -20,10 +20,27 @@ namespace ASP_Project.Areas.Customer.Controllers
             _dbContext = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pg = 1)
         {
             var products = await _dbContext.Products.Include(p => p.ProductImages).ToListAsync();
-            return View(products);
+            //var products = await _dbContext.Products.ToListAsync();
+
+
+            const int pageSize = 10;
+            if(pg < 1)
+                pg = 1;
+
+            int recsCount = products.Count();
+
+            var pager = new Pager(recsCount, pg, pageSize);
+
+            int recSkip = (pg - 1) * pageSize;
+
+            var data = products.Skip(recSkip).Take(pager.PageSize).ToList();
+
+            this.ViewBag.Pager = pager;
+
+            return View(data);
         }
 
         public IActionResult Privacy()

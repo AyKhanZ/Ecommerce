@@ -1,7 +1,17 @@
 ﻿@using ASP_Project.Areas.Identity.Data.Models;
 @model IEnumerable<Product>
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Index";
+
+    Pager pager = new Pager();
+
+    int pageNo = 0;
+
+    @if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
 }
 
 <!DOCTYPE html>
@@ -12,46 +22,74 @@
     <link rel="stylesheet" href="~/css/Home.css">
     <script defer src="https://kit.fontawesome.com/28a2634532.js" crossorigin="anonymous"></script>
 </head> 
-<body> 
-    <div>
-
-    <div class="title"><button class="redBtn">x Cancel filtration</button></div>
-    <main>
-        <div class="filters"></div>
-        <div class="fourColumns">
-            @foreach (var product in Model!)
+<body>
+    <main> 
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr> 
+                    <th scope="col">Name</th>
+                    <th scope="col">Images</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Producer</th>
+                    <th scope="col">RAM</th>
+                    <th scope="col">Operating system</th>
+                    <th scope="col">NFC</th>
+                    <th scope="col">SIMs</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in @Model!)
+                {
+                    <tr> 
+                        <td>@item.Name</td>
+                        <td>@item.Price</td>
+                        <td>
+                            <img class="product-img" src="data:image/jpeg;base64,@Convert.ToBase64String(item.ProductImages.First().ImageData!)" alt="product image">
+                        </td>
+                        <td>@item.Producer</td>
+                        <td>@item.RAM</td>
+                        <td>@item.OperatingSystemEnum</td>
+                        <td>@item.NFC</td>
+                        <td>@item.NumberOfSIMCards</td>
+                    </tr>
+                }
+            </tbody>
+        </table> 
+        <div class="container-paggination">
+            @if (pager.TotalPages > 0)
             {
-                <div class=product>
-                    <p><span class="bordered green">-@product.Discount</span></p>
-                        <img style="width: 150px; height: 190px" src="data:image/jpeg;base64,@Convert.ToBase64String(product.ProductImages.First().ImageData!)" alt="product image" />
-                        <p>@product.Name</p>
-                        @if (product.Discount != 0)
-                        {
-                            <p class=price>
-                                <span class=crossed>@product.Price</span>
-                                @(product.Price - product.Discount)
-                            </p>
-                        }
-                        else
-                        {
-                            <p class=price>@product.Price</p>
-                        }
-                        <div class='hiddenAnimation'>
-                        <div class='buttons'>
-                            <button class="cart">Add to cart <i class="fa-solid fa-cart-shopping"></i></button>
-                            <button class="heart"><i class="fa-regular fa-heart"></i></button>
-                        </div>
-                        <div class=smallDescription>
-                            <div class="infoRow"><p class="grey">Producer: </p><p> @product.Producer</p></div><hr>
-                            <div class="infoRow"><p class="grey">Internal Memmory: </p><p> @product.InternalMemory</p></div><hr>
-                            <div class="infoRow"><p class="grey">RAM: </p><p> @product.RAM</p></div>
-                        </div>
-                    </div>
-                </div>
+                <ul class="pagination justify-content-end "> 
+
+                    @if (pager.CurrentPage > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-action="Index" asp-route-pg="1">First</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" asp-action="Index" 
+                            asp-route-pg="@(pager.CurrentPage - 1)">Previus</a>
+                        </li>
+                    }
+
+                    @for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
+                    {
+                        <li class="page-item @(pge == pager.CurrentPage ? "active" : "")">
+                            <a class="page-link" asp-action="Index" asp-route-pg="@pge">@pge</a>
+                        </li>
+                    }
+
+                    @if(pager.CurrentPage < pager.TotalPages)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-action="Index" asp-route-pg="@(pager.CurrentPage + 1)">Next</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" asp-action="Index" asp-route-pg="@(pager.TotalPages)">Last</a>
+                        </li>
+                    }
+                </ul>
             }
         </div>
     </main>
-    <script src="~/js/HIndex.js"></script>
-    </div> 
 </body>    
 </html> 

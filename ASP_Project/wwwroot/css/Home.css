@@ -19,7 +19,11 @@ body {
 main {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     width: 100%;
+    margin: 30px 0px;
+    flex-direction: column;
+    justify-content: start;
 }
 
 input:checked {
@@ -53,7 +57,10 @@ input:checked {
     border-radius: 10px;
     margin: 10px 0;
 }
-
+.product-img{
+    width:60px; 
+    height:60px; 
+}
 .hiddenAnimation {
     display: none;
     width: 95%;
@@ -202,3 +209,6 @@ button > i {
 }
 
 /* filter end */
+.container-paggination {
+    margin:10px 0;
+}
