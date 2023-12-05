@@ -20,14 +20,14 @@ namespace ASP_Project.Areas.Customer.Controllers
             _dbContext = context;
         }
 
-        public async Task<IActionResult> Index(int pg = 1)
+        public async Task<IActionResult> Index(string searchText = "",int pg = 1)
         {
-            var products = await _dbContext.Products.Include(p => p.ProductImages).ToListAsync();
-            //var products = await _dbContext.Products.ToListAsync();
-
+            List<Product> products;
+            if (searchText != "" && searchText != null) products = await _dbContext.Products.Include(p => p.ProductImages).Where(p=>p.Name.Contains(searchText)).ToListAsync();
+            else products = await _dbContext.Products.Include(p => p.ProductImages).ToListAsync();
 
             const int pageSize = 10;
-            if(pg < 1)
+            if (pg < 1)
                 pg = 1;
 
             int recsCount = products.Count();

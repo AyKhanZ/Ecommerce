@@ -24,38 +24,130 @@
 </head> 
 <body>
     <main> 
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr> 
-                    <th scope="col">Name</th>
-                    <th scope="col">Images</th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Producer</th>
-                    <th scope="col">RAM</th>
-                    <th scope="col">Operating system</th>
-                    <th scope="col">NFC</th>
-                    <th scope="col">SIMs</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in @Model!)
-                {
-                    <tr> 
-                        <td>@item.Name</td>
-                        <td>@item.Price</td>
-                        <td>
-                            <img class="product-img" src="data:image/jpeg;base64,@Convert.ToBase64String(item.ProductImages.First().ImageData!)" alt="product image">
-                        </td>
-                        <td>@item.Producer</td>
-                        <td>@item.RAM</td>
-                        <td>@item.OperatingSystemEnum</td>
-                        <td>@item.NFC</td>
-                        <td>@item.NumberOfSIMCards</td>
-                    </tr>
-                }
-            </tbody>
-        </table> 
+        <div class="main-container"> 
+            <div class="filters">
+                <form class="form-filters" method="get" action="@Url.Action("Index")">
+                    <button type="button" class="accordion">Price</button>
+                    <div class="panel">
+                        <div class="filter-input">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Min/Max</span>
+                                </div>
+                                <input name="minPrice" type="text" class="form-control" placeholder="0$">
+                                <input name="maxPrice" type="text" class="form-control" placeholder="5000$">
+                            </div> 
+                        </div>
+                    </div>
+                    <hr/>
+
+                    <button type="button" class="accordion">RAM</button>
+                    <div class="panel">
+                        <div class="filter-input">
+                            <div class="input-group-items"> 
+                                <div class="custom-control custom-checkbox mr-sm-2">
+                                    <input name="minPrice" type="checkbox" class="custom-control-input" id="ram4">
+                                    <label class="custom-control-label" for="ram4">4 RAM</label>
+                                </div>
+                                <div class="custom-control custom-checkbox mr-sm-2">
+                                    <input name="minPrice" type="checkbox" class="custom-control-input" id="ram4">
+                                    <label class="custom-control-label" for="ram6">6 RAM</label>
+                                </div>
+                                <div class="custom-control custom-checkbox mr-sm-2">
+                                    <input name="minPrice" type="checkbox" class="custom-control-input" id="ram4">
+                                    <label class="custom-control-label" for="ram8">8 RAM</label>
+                                </div>
+                                <div class="custom-control custom-checkbox mr-sm-2">
+                                    <input name="minPrice" type="checkbox" class="custom-control-input" id="ram4">
+                                    <label class="custom-control-label" for="ram8">16 RAM</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr/>
+
+                    <button type="button" class="accordion">Internal memory</button>
+                    <div class="panel">
+                        <div class="filter-input">
+                            <div class="input-group-items"> 
+                                <div class="custom-control custom-checkbox mr-sm-2">
+                                    <input name="minPrice" type="checkbox" class="custom-control-input" id="memory64">
+                                    <label class="custom-control-label" for="memory64">64 GB</label>
+                                </div>
+                                <div class="custom-control custom-checkbox mr-sm-2">
+                                    <input name="minPrice" type="checkbox" class="custom-control-input" id="memory128">
+                                    <label class="custom-control-label" for="memory128">128 GB</label>
+                                </div>
+                                <div class="custom-control custom-checkbox mr-sm-2">
+                                    <input name="minPrice" type="checkbox" class="custom-control-input" id="memory256">
+                                    <label class="custom-control-label" for="memory256">256 GB</label>
+                                </div>
+                                <div class="custom-control custom-checkbox mr-sm-2">
+                                    <input name="minPrice" type="checkbox" class="custom-control-input" id="memory512">
+                                    <label class="custom-control-label" for="memory512">512 GB</label>
+                                </div>
+                                <div class="custom-control custom-checkbox mr-sm-2">
+                                    <input name="minPrice" type="checkbox" class="custom-control-input" id="memory1">
+                                    <label class="custom-control-label" for="memory1">1 TB</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr/>
+                     
+                </form>
+            </div>
+            <div class="products">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Images</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Producer</th>
+                            <th scope="col">RAM</th>
+                            <th scope="col">Operating system</th>
+                            <th scope="col">NFC</th>
+                            <th scope="col">SIMs</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Any())
+                        {
+                            @foreach (var item in @Model!)
+                            {
+                                <tr>
+                                    <td>@item.Name</td>
+                                    <td>@item.Price</td>
+                                    <td>
+                                        <img class="product-img" src="data:image/jpeg;base64,@Convert.ToBase64String(item.ProductImages.First().ImageData!)" alt="product image">
+                                    </td>
+                                    <td>@item.Producer</td>
+                                    <td>@item.RAM</td>
+                                    <td>@item.OperatingSystemEnum</td>
+                                    <td>@item.NFC</td>
+                                    <td>@item.NumberOfSIMCards</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="8">No products found.</td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>  
+        </div>
         <div class="container-paggination">
+            <div> 
+                <form class="form-inline d-flex" method="get" action="@Url.Action("Index")">
+                    <input name="searchText" class="form-control mr-sm-2" style="margin-right:1rem;" type="search" placeholder="Search by name" aria-label="Search">
+                    <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
+                </form>
+            </div> 
             @if (pager.TotalPages > 0)
             {
                 <ul class="pagination justify-content-end "> 
@@ -91,5 +183,6 @@
             }
         </div>
     </main>
+    <script src="~/js/Home.js"></script>
 </body>    
 </html> 
