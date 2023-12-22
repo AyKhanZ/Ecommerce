@@ -206,7 +206,7 @@ button > i {
 }
 
 .filters {
-    width: 18%;
+    width: 20%;
     height: 100vh;
     overflow-y: scroll;
     padding: 0 10px;
@@ -256,6 +256,17 @@ main {
     padding-left:10px;
     display:flex;
     flex-direction:column;
+}
+.search-div {
+    display:flex;
+    justify-content:space-between;
+}
+.search-div input{
+    width: 66%;
+}
+.search-div button{
+    width: 28%; 
+    margin-right:0.5rem;
 }
 /* --------------------------------------------------------- accordion panel ---------------------------------------------------- */
 .accordion {

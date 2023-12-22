@@ -1,5 +1,5 @@
-﻿@using ASP_Project.Areas.Identity.Data.Models;
-@model IEnumerable<Product>
+﻿@using ASP_Project.Areas.Identity.Data.Models; 
+@model ProductListViewModel;
 @{
     ViewData["Title"] = "Index";
 
@@ -21,10 +21,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="~/css/Home.css">
     <script defer src="https://kit.fontawesome.com/28a2634532.js" crossorigin="anonymous"></script>
-</head> 
+    <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
 <body>
-    <main> 
-        <div class="main-container"> 
+    <main>
+        <div class="main-container">
             <div class="filters">
                 <form class="form-filters" method="get" action="@Url.Action("Index")">
                     <button type="button" class="accordion">Price</button>
@@ -34,67 +35,33 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">Min/Max</span>
                                 </div>
-                                <input name="minPrice" type="text" class="form-control" placeholder="0$">
-                                <input name="maxPrice" type="text" class="form-control" placeholder="5000$">
-                            </div> 
+                                <input name="filter.MinPrice" type="text" class="form-control" placeholder="0$" value="@Model.Filter.MinPrice">
+                                <input name="filter.MaxPrice" type="text" class="form-control" placeholder="5000$" value="@Model.Filter.MaxPrice">
+                            </div>
                         </div>
                     </div>
-                    <hr/>
-
+                    <hr />
+                     
                     <button type="button" class="accordion">RAM</button>
                     <div class="panel">
                         <div class="filter-input">
-                            <div class="input-group-items"> 
-                                <div class="custom-control custom-checkbox mr-sm-2">
-                                    <input name="minPrice" type="checkbox" class="custom-control-input" id="ram4">
-                                    <label class="custom-control-label" for="ram4">4 RAM</label>
-                                </div>
-                                <div class="custom-control custom-checkbox mr-sm-2">
-                                    <input name="minPrice" type="checkbox" class="custom-control-input" id="ram4">
-                                    <label class="custom-control-label" for="ram6">6 RAM</label>
-                                </div>
-                                <div class="custom-control custom-checkbox mr-sm-2">
-                                    <input name="minPrice" type="checkbox" class="custom-control-input" id="ram4">
-                                    <label class="custom-control-label" for="ram8">8 RAM</label>
-                                </div>
-                                <div class="custom-control custom-checkbox mr-sm-2">
-                                    <input name="minPrice" type="checkbox" class="custom-control-input" id="ram4">
-                                    <label class="custom-control-label" for="ram8">16 RAM</label>
-                                </div>
+                            <div class="input-group-items">
+                                @foreach (var ram in new List<string> { "4 GB", "6 GB", "8 GB", "16 GB", "1 TB" })
+                                {
+                                    <div class="custom-control custom-checkbox mr-sm-2">
+                                        <input name="filter.RAMs" type="checkbox" class="custom-control-input" id="ram@(ram)" value="@ram" @(Model.Filter.RAMs != null && Model.Filter.RAMs.Contains(ram) ? "checked" : "")>
+                                        <label class="custom-control-label" for="ram@(ram)">@ram RAM</label>
+                                    </div>
+                                }
                             </div>
                         </div>
-                    </div>
-                    <hr/>
-
-                    <button type="button" class="accordion">Internal memory</button>
-                    <div class="panel">
-                        <div class="filter-input">
-                            <div class="input-group-items"> 
-                                <div class="custom-control custom-checkbox mr-sm-2">
-                                    <input name="minPrice" type="checkbox" class="custom-control-input" id="memory64">
-                                    <label class="custom-control-label" for="memory64">64 GB</label>
-                                </div>
-                                <div class="custom-control custom-checkbox mr-sm-2">
-                                    <input name="minPrice" type="checkbox" class="custom-control-input" id="memory128">
-                                    <label class="custom-control-label" for="memory128">128 GB</label>
-                                </div>
-                                <div class="custom-control custom-checkbox mr-sm-2">
-                                    <input name="minPrice" type="checkbox" class="custom-control-input" id="memory256">
-                                    <label class="custom-control-label" for="memory256">256 GB</label>
-                                </div>
-                                <div class="custom-control custom-checkbox mr-sm-2">
-                                    <input name="minPrice" type="checkbox" class="custom-control-input" id="memory512">
-                                    <label class="custom-control-label" for="memory512">512 GB</label>
-                                </div>
-                                <div class="custom-control custom-checkbox mr-sm-2">
-                                    <input name="minPrice" type="checkbox" class="custom-control-input" id="memory1">
-                                    <label class="custom-control-label" for="memory1">1 TB</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <hr/>
+                    </div> 
+                    <hr />
                      
+                    <div class="search-div">
+                        <input type="text" id="searchText" name="filter.SearchText" placeholder="Search by name" class="form-control" value="@Model.Filter.SearchText">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </div> 
                 </form>
             </div>
             <div class="products">
@@ -112,9 +79,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if (Model.Any())
+                        @if (!Model.Products.Any() && !string.IsNullOrEmpty(Model.Filter.SearchText))
                         {
-                            @foreach (var item in @Model!)
+                            <tr>
+                                <td colspan="8">No products found.</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var item in @Model.Products!)
                             {
                                 <tr>
                                     <td>@item.Name</td>
@@ -130,59 +103,46 @@
                                 </tr>
                             }
                         }
-                        else
-                        {
-                            <tr>
-                                <td colspan="8">No products found.</td>
-                            </tr>
-                        }
-
                     </tbody>
                 </table>
-            </div>  
+            </div>
         </div>
         <div class="container-paggination">
-            <div> 
-                <form class="form-inline d-flex" method="get" action="@Url.Action("Index")">
-                    <input name="searchText" class="form-control mr-sm-2" style="margin-right:1rem;" type="search" placeholder="Search by name" aria-label="Search">
-                    <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
-                </form>
-            </div> 
             @if (pager.TotalPages > 0)
             {
-                <ul class="pagination justify-content-end "> 
-
+                <ul class="pagination justify-content-end">
                     @if (pager.CurrentPage > 1)
                     {
                         <li class="page-item">
-                            <a class="page-link" asp-action="Index" asp-route-pg="1">First</a>
+                            <a class="page-link" asp-action="Index" asp-route-pg="1" asp-route-minPrice="@Model.Filter.MinPrice" asp-route-maxPrice="@Model.Filter.MaxPrice" asp-route-RAMs="@Model.Filter.RAMs" asp-route-searchText="@Model.Filter.SearchText">First</a>
                         </li>
                         <li class="page-item">
-                            <a class="page-link" asp-action="Index" 
-                            asp-route-pg="@(pager.CurrentPage - 1)">Previus</a>
+                            <a class="page-link" asp-action="Index"
+                               asp-route-pg="@(pager.CurrentPage - 1)" asp-route-minPrice="@Model.Filter.MinPrice" asp-route-maxPrice="@Model.Filter.MaxPrice" asp-route-RAMs="@Model.Filter.RAMs" asp-route-searchText="@Model.Filter.SearchText">Previus</a>
                         </li>
                     }
 
                     @for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
                     {
                         <li class="page-item @(pge == pager.CurrentPage ? "active" : "")">
-                            <a class="page-link" asp-action="Index" asp-route-pg="@pge">@pge</a>
+                            <a class="page-link" asp-action="Index" asp-route-pg="@pge" asp-route-minPrice="@Model.Filter.MinPrice" asp-route-maxPrice="@Model.Filter.MaxPrice" asp-route-RAMs="@Model.Filter.RAMs" asp-route-searchText="@Model.Filter.SearchText">@pge</a>
                         </li>
                     }
 
-                    @if(pager.CurrentPage < pager.TotalPages)
+                    @if (pager.CurrentPage < pager.TotalPages)
                     {
                         <li class="page-item">
-                            <a class="page-link" asp-action="Index" asp-route-pg="@(pager.CurrentPage + 1)">Next</a>
+                            <a class="page-link" asp-action="Index" asp-route-pg="@(pager.CurrentPage + 1)" asp-route-minPrice="@Model.Filter.MinPrice" asp-route-maxPrice="@Model.Filter.MaxPrice" asp-route-RAMs="@Model.Filter.RAMs" asp-route-searchText="@Model.Filter.SearchText">Next</a>
                         </li>
                         <li class="page-item">
-                            <a class="page-link" asp-action="Index" asp-route-pg="@(pager.TotalPages)">Last</a>
+                            <a class="page-link" asp-action="Index" asp-route-pg="@(pager.TotalPages)" asp-route-minPrice="@Model.Filter.MinPrice" asp-route-maxPrice="@Model.Filter.MaxPrice" asp-route-RAMs="@Model.Filter.RAMs" asp-route-searchText="@Model.Filter.SearchText">Last</a>
                         </li>
                     }
                 </ul>
             }
         </div>
+
     </main>
-    <script src="~/js/Home.js"></script>
-</body>    
-</html> 
+    <script src="~/js/Home.js"></script>   
+</body>
+</html>
