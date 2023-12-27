@@ -81,6 +81,7 @@ public class Product
 	//add raiting 
     
 	public ShoppingCartItem ShoppingCartItem { get; set; } //test i dont know would it work//
+	public int FavoriteId { get; set; } //test i dont know would it work//
 
 	public int CategoryId { get; set; }
 	public Category Category { get; set; } 

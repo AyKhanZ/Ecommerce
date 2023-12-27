@@ -1,0 +1,368 @@
+﻿body {
+    display: flex;
+    flex-direction:column;
+    justify-content: center;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f3f2f2;
+    accent-color: #a0a0a0;
+    margin: 0;
+    padding: 0;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+/* input[type=number] {
+  -moz-appearance: textfield;
+} */
+
+
+h3, h2 {
+    padding: 0 2rem;
+    line-height: 1.5rem;
+}
+
+.horizontal-blocks {
+    display: flex;
+    height: 85vh;
+    width: 80vw;
+    justify-content: space-between;
+}
+
+.row h3 {
+    font-weight: 300;
+    font-size: 1rem;
+}
+
+h2 {
+    font-size: 2rem;
+    font-weight: 300;
+    font-size: 1.5rem;
+}
+
+.controls {
+    text-align: center;
+}
+
+.attention {
+    color: #e53b3b;
+    font-weight: bold;
+    font-size: 3rem;
+}
+
+.crossed {
+    text-decoration: line-through;
+    font-size: 1.5rem;
+    color: #737373;
+}
+
+.price p {
+    margin: 20px 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.bordered {
+    border: 2px solid rgb(98, 164, 98);
+    color: rgb(98, 164, 98);
+    border-radius: 5px;
+    font-size: 1.2rem;
+    padding: 5px;
+    margin-right: 20px;
+}
+
+.cashback {
+    width: 150px;
+    height: 100px;
+    margin-top: 1rem;
+}
+
+.pay {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+hr {
+    width: 100%;
+    height: 1px;
+    background-color: #9a9a9a;
+}
+
+.half {
+    width: 43%;
+}
+
+.heart {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 2rem;
+    color:Black;
+}
+
+.tittle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 2px solid transparent;
+    border-radius: 0 0 10px 10px;
+}
+
+
+
+button {
+    text-decoration: none;
+    border: 2px solid transparent;
+    background-color: transparent;
+    color: #414141;
+    font-size: 1.5rem;
+}
+
+.fa-cart-shopping, .fa-wallet {
+    font-size: 2 rem;
+    margin: 0 1rem;
+}
+
+.fa-heart {
+    font-size: 2rem;
+}
+
+.green {
+    color: rgb(98, 164, 98);
+}
+.red-stock {
+    color: red;
+}
+
+.smaller {
+    width: 90%;
+}
+
+.gray {
+    color: #9a9a9a;
+}
+
+.column {
+    width: 50%;
+    padding: 1rem 0;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.info {
+    display: flex;
+    padding: 1rem;
+}
+
+.row h3 {
+    font-weight: 300;
+    line-height: 10px;
+}
+.title {
+    display:flex;
+    justify-content:space-between;
+
+}
+.two-btns{
+    display:flex;
+    justify-content:space-between;
+
+}
+
+a {
+    text-decoration: none;
+}
+.cartWhite {
+    color: white;
+}
+
+.i-heart {
+    color: gray;
+}  
+
+.corusel {
+    display: flex;
+    flex-direction:row-reverse;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.phone {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-direction: column;
+    width: 80vw;
+}
+
+
+.corusel, .tittle, .info, .payment {
+    border: transparent;
+    border-radius: 10px;
+    background-color: #ffffff;
+    margin: 1rem 0;
+}
+
+
+.corusel, .payment {
+    width: 44%;
+    padding: 1rem 2rem;
+}
+
+.tittle {
+    width: 100%;
+}
+
+.payment {
+    border: 2px solid transparent;
+    border-radius: 10px;
+}
+
+.info {
+    width: 100%;
+}
+
+.corusel input[type='radio'] {
+    -webkit-appearance: none; /* Убираем стандартные стили для радиокнопок в Chrome и Safari */
+    -moz-appearance: none; /* Убираем стандартные стили для радиокнопок в Firefox */
+    appearance: none; /* Убираем стандартные стили для радиокнопок в других браузерах */
+    width: 1rem; /* Задаем ширину */
+    height: 1rem; /* Задаем высоту */
+    border-radius: 50%; /* Делаем круглой форму */
+    background-color: #a9a9a9; /* Или другой цвет фона для радиокнопок в каруселе */
+    border: 2px solid #9a9a9a; /* Или другой цвет рамки */
+    outline: none; /* Убираем контур фокуса */
+    cursor: pointer; /* Делаем курсор указателем при наведении */
+}
+
+    .corusel input[type='radio']:checked {
+        background-color: #383838; /* Или другой зеленый цвет для активной кнопки */
+        border-color: #383838; /* Или другой цвет рамки для активной кнопки */
+    }
+
+.btnsColumn {
+    width: 80%;
+    color:white;
+}
+
+.buy {
+    padding: 20px 5px;
+    font-size: 1.4rem;
+    border: 1px solid #414141;
+    color: #414141;
+    border-radius: 12px;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: 10px 0 0 0;
+}
+
+button, input {
+    cursor: pointer;
+}
+
+.count {
+    width: 50px;
+    color: gray;
+    text-align: center;
+    font-size: 2rem;
+    outline: none;
+    border: 2px solid GRAY;
+    border-radius: 5px;
+}
+
+.increase, .decrease {
+    padding: 0;
+    width: 100%;
+}
+
+.decrease {
+    border-radius: 0 0 10px 10px;
+}
+
+.numInput {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-direction: column;
+    padding: 0;
+    color: #a0a0a0;
+    text-align: center;
+    width: 60px;
+}
+
+.cart {
+    width: 100%;
+    padding: 20px 5px;
+    border: 2px solid rgb(229, 56, 56);
+    font-size: 1.4rem;
+    color: white;
+    border-radius: 12px;
+    background-color: #e53b3b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+} 
+    .buy:hover, .cart:hover {
+        cursor: pointer;
+    }
+
+.columns {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.btns {
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+    margin-top: 3rem;
+}
+
+.imgcontainer {
+    background-repeat: no-repeat;
+    background-size: 350px;
+    background-position: center;
+    width: 500px;
+    height: 600px;
+    background-image: url(./imgs/xiomi.png);
+}
+
+@keyframes blur {
+    0% {
+        opacity: 0.3;
+    }
+
+    10% {
+        opacity: 0.5;
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    80% {
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 0.5;
+    }
+
+    100% {
+        opacity: 0.3;
+    }
+}

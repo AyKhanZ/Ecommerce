@@ -14,7 +14,6 @@
 
 body {
     font-family: 'Quicksand', sans-serif;
-    margin:0;
     padding:0;
 }
 
@@ -25,7 +24,7 @@ img {
 
 .container {
     width: inherit;
-    margin: 0 auto; 
+    margin: 0 0.1rem !important;
 }
 
 
@@ -84,7 +83,11 @@ img {
     max-width: 100%; /* Максимальная ширина в процентах */
     display: inline-block;
 }
-
+.fourColumns {
+    display: grid;
+    width: 80%;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+}
 .product-content {
     background: var(--gray);
     padding: 1rem;
@@ -100,13 +103,17 @@ img {
     border-radius: 50%;
     transition: background 0.5s ease;
 }
-
+.div-up{
+    display:flex;
+    justify-content:space-evenly;
+    width:100%;
+}
 
 .product-btns {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
-    opacity: 0; 
+    opacity: 0;
     z-index: 1;
     width: 100%;
 } 
@@ -125,12 +132,12 @@ img {
     outline: 0;
     z-index: 1;
 }
-.btn-cart {
-    width: 60%;  
+.btn btn-cart {
+    width: 80%;  
 }
 
 .btn-delete {
-    width: 45%;  
+    width: 50%;  
 }
 
 .btn-edit {
@@ -217,7 +224,133 @@ img {
     cursor: pointer;
 }
 
+/* filter end */
+.container-paggination {
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
+    margin: 5rem 0 0 0;
+}
 
+.main-container {
+    display: flex;
+    justify-content: space-evenly;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.filters {
+    width: 20%;
+    height: 100vh;
+    overflow-y: scroll;
+    padding: 0 10px;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    background-color: white;
+    margin: 1rem 1rem 1rem 0;
+    padding: 10px 2px;
+}
+
+    .filters::-webkit-scrollbar {
+        width: 0.4em;
+    }
+
+    .filters::-webkit-scrollbar-thumb {
+        background-color: transparent;
+    }
+
+    .filters::-webkit-scrollbar-track {
+        background-color: transparent;
+    }
+
+    .filters::-webkit-scrollbar-thumb:hover {
+        background-color: #888;
+    }
+
+.filter-input {
+    padding: 0.3rem;
+    margin: 0;
+}
+
+main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 30px;
+    flex-direction: column;
+    justify-content: start;
+}
+
+.products {
+    width: 80%;
+}
+
+.input-group-items {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-filters {
+    padding-left: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.search-div {
+    display: flex;
+    justify-content: space-between;
+}
+
+    .search-div input {
+        width: 66%;
+    }
+
+    .search-div button {
+        width: 28%;
+        margin-right: 0.5rem;
+    }
+/* --------------------------------------------------------- accordion panel ---------------------------------------------------- */
+.accordion {
+    background-color: transparent;
+    color: #444;
+    cursor: pointer;
+    padding: 18px 0;
+    width: 90%;
+    border: none;
+    outline: none;
+    transition: 0.4s;
+    align-items: center;
+    text-align: left;
+    font-size: 16px;
+}
+
+/* Style the accordion panel. Note: hidden by default */
+.panel {
+    padding: 0 18px;
+    background-color: white;
+    display: none;
+    overflow: hidden;
+    padding: 1rem 0.1rem;
+}
+
+.accordion:after,
+.accordion.active:after {
+    content: '+';
+    color: black; /* или color: gray; */
+    font-size: 22px; /* или другой размер, по вашему усмотрению */
+    float: right;
+    line-height: 1; /* Выравнивание по вертикали */
+}
+
+.accordion.active:after {
+    content: "-";
+    color: black;
+    font-size: 26px;
+    float: right;
+    line-height: 1; /* Выравнивание по вертикали */
+}
 
 
 

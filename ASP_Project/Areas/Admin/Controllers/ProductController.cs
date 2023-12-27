@@ -21,15 +21,51 @@ public class ProductController : Controller
 		_productValidator = validator;
 	}
 
-	public async Task<IActionResult> Index()
-	{
-		var products = await _dbContext.Products
-			.Include(v => v.ProductImages)
-			.Include(p => p.Category).ToListAsync();
-		return View(products);
-	}
+    public async Task<IActionResult> Index(int pg = 1, [FromQuery] ProductFilter filter = null)
+    {
+        if (filter == null) filter = new ProductFilter();
 
-	public IActionResult Create()
+        IQueryable<Product> productsQuery = _dbContext.Products
+            .Include(p => p.ProductImages);
+
+        if (!string.IsNullOrEmpty(filter.SearchText)) productsQuery = productsQuery.Where(p => p.Name.Contains(filter.SearchText));
+
+        if (filter.MinPrice != null) productsQuery = productsQuery.Where(p => p.Price >= filter.MinPrice);
+
+        if (filter.MaxPrice != null) productsQuery = productsQuery.Where(p => p.Price <= filter.MaxPrice);
+
+        if (filter.RAMs != null && filter.RAMs.Any()) productsQuery = productsQuery.Where(p => filter.RAMs.Contains(p.RAM));
+
+        if (filter.OperatingSystems != null && filter.OperatingSystems.Any()) productsQuery = productsQuery.Where(p => filter.OperatingSystems.Contains(p.OperatingSystemEnum));
+
+        if (filter.Producers != null && filter.Producers.Any()) productsQuery = productsQuery.Where(p => filter.Producers.Contains(p.Producer));
+
+        if (filter.NFC != null) productsQuery = productsQuery.Where(p => p.NFC == filter.NFC);
+
+        if (filter.NumberOfSIMCards != null) productsQuery = productsQuery.Where(p => p.NumberOfSIMCards == filter.NumberOfSIMCards);
+
+        List<Product> products = await productsQuery.ToListAsync();
+
+        const int pageSize = 12;
+
+        if (pg < 1) pg = 1;
+
+        int recsCount = products.Count();
+
+        var pager = new Pager(recsCount, pg, pageSize);
+
+        int recSkip = (pg - 1) * pageSize;
+
+        var data = products.Skip(recSkip).Take(pager.PageSize).ToList();
+
+        var viewModel = new ProductListViewModel { Products = data, Filter = filter, Pager = pager };
+
+        ViewBag.Pager = pager;
+
+        return View(viewModel);
+    }
+
+    public IActionResult Create()
 	{
 		return View();
 	}

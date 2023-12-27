@@ -1,0 +1,107 @@
+﻿@using ASP_Project.Areas.Identity.Data.DbContexts;
+@using ASP_Project.Areas.Identity.Data.Models
+@inject UserContext _context
+@model Product
+@{
+	ViewData["Title"] = "Open product";
+	var categories = _context.Categories.ToList();  
+} 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="~/css/Open.css">
+	<script src="https://kit.fontawesome.com/28a2634532.js" crossorigin="anonymous"></script>
+</head>
+<body>
+	<input asp-for="Id" hidden />
+	<div class="border p-3 mt-4">
+		<div class="row pb-2">
+			<div class="title">
+				<h2 class="text-primary"> @Model.Name </h2>
+				<div class="two-btns">
+					<button type="button" class="heart">
+						<a asp-controller="Home" asp-action="Index">
+							<i class="fa-regular fa-heart i-heart" ></i>
+						</a>
+					</button>
+					<a asp-controller="Home" asp-action="Index" class="btn btn-secondary" style="width:150px">
+						Back to List
+					</a>
+				</div>
+			</div>
+		</div>
+		<div class="container"> 
+			<div class="phone">  
+				<div class="horizontal-blocks">
+					<div class="corusel">
+						<img class="img-fluid img" src="data:image/jpeg;base64, @Convert.ToBase64String(Model.ProductImages.FirstOrDefault()?.ImageData!)" class="d-block w-100" alt="Product Image">
+					</div>
+
+					<div class="payment">
+						<h4>
+							@if (Model.Quantity > 0)
+							{
+								<span class="green">In stock</span>
+							}
+							else
+							{
+								<span class="red-stock">No more</span>
+							}
+						</h4>
+						<hr>
+						<div class="pay">
+							<div class="price">
+								<p><span class="bordered">-@Model.Discount%</span> <span class="crossed">@Model.Price</span></p>
+								<p class="attention">@(Model.Price - Model.Price * Model.Discount/100)</p>
+							</div>
+						</div>
+						<hr>
+						<div class="btns">
+							<div class="columns">
+								<div class="btnsColumn">
+									<a asp-controller="Home" asp-action="Index" class="cart">
+										<button type="button" class="cartWhite">Add to cart <i class="fa-solid fa-cart-shopping"></i></button>
+									</a>
+									<a asp-controller="Home" asp-action="Index" >
+										<button type="button" class="buy">Buy right now</button>
+									</a>
+								</div>
+								<div class="numInput">
+									<button type="button" class="increase"><i class="fa-solid fa-caret-up"></i></button>
+									<input min="1" value="1" class="count" type="number" />
+									<button type="button" class="decrease"><i class="fa-solid fa-caret-down"></i></button>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>  
+				<div class="info">
+					<div class="column">
+						<div class="row"><h3 class="gray">Firm: </h3><h3> @Model.Producer </h3></div>
+						<hr class="smaller">
+						<div class="row"><h3 class="gray">Operating System: </h3><h3>@Model.OperatingSystemEnum</h3></div>
+						<hr class="smaller">
+						<div class="row"><h3 class="gray">Number of SIM cards: </h3><h3> @Model.NumberOfSIMCards</h3></div>
+						<hr class="smaller">
+						<div class="row"><h3 class="gray">RAM: </h3><h3> @Model.RAM</h3></div>
+						<hr class="smaller">
+						<div class="row"><h3 class="gray">Internal storage capacity: </h3><h3> @Model.InternalMemory </h3></div>
+						<hr class="smaller">
+						<div class="row"><h3 class="gray">NFC: </h3><h3> @(Model.NFC == true ? "There are" :"There aren\'t") </h3></div>
+					</div>
+					<div class="column">
+						<div class="row"><h3 class="gray">Battery capacity: </h3><h3> @Model.BatteryCapacity </h3></div>
+						<hr class="smaller">
+						<div class="row"><h3 class="gray">Nuclear number: </h3><h3> @Model.NuclearNumber</h3></div>
+						<hr class="smaller">
+						<div class="row"><h3 class="gray">Color: </h3><h3> @Model.Color </h3></div>
+						<hr class="smaller"> 
+					</div>
+				</div> 
+			</div>
+		</div>
+	</div>
+<script src="~/js/Open.js"></script>
+</body>

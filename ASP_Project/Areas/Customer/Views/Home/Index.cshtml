@@ -24,7 +24,7 @@
     <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
-    <main>
+    <main>  
         <div class="main-container">
             <div class="filters">
                 <form class="form-filters" method="get" action="@Url.Action("Index")">
@@ -57,54 +57,115 @@
                         </div>
                     </div> 
                     <hr />
-                     
+
+                    <button type="button" class="accordion">Operating System</button>
+                    <div class="panel">
+                        <div class="filter-input">
+                            <div class="input-group-items">
+                                @foreach (var os in Enum.GetValues(typeof(OperatingSystemEnum)).Cast<OperatingSystemEnum>())
+                                {
+                                    <div class="custom-control custom-checkbox mr-sm-2">
+                                        <input name="filter.OperatingSystems" type="checkbox" class="custom-control-input" id="os@(os)" value="@os" @(Model.Filter.OperatingSystems != null && Model.Filter.OperatingSystems.Contains(os) ? "checked" : "")>
+                                        <label class="custom-control-label" for="os@(os)">@os</label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+
+                    <button type="button" class="accordion">Producer</button>
+                    <div class="panel">
+                        <div class="filter-input">
+                            <div class="input-group-items">
+                                @foreach (var pr in Enum.GetValues(typeof(Producer)).Cast<Producer>())
+                                {
+                                    <div class="custom-control custom-checkbox mr-sm-2">
+                                        <input name="filter.Producers" type="checkbox" class="custom-control-input" id="os@(pr)" value="@pr" @(Model.Filter.Producers != null && Model.Filter.Producers.Contains(pr) ? "checked" : "")>
+                                        <label class="custom-control-label" for="os@(pr)">@pr</label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+
+                    <button type="button" class="accordion">NFC</button>
+                    <div class="panel">
+                        <div class="filter-input">
+                            <div class="custom-control custom-radio">
+                                <input type="radio" id="nfcAll" name="filter.NFC" value="" @(Model.Filter.NFC == null ? "checked" : "")>
+                                <label for="nfcAll">All</label>
+                            </div>
+                            <div class="custom-control custom-radio">
+                                <input type="radio" id="nfcYes" name="filter.NFC" value="true" @(Model.Filter.NFC == true ? "checked" : "")>
+                                <label for="nfcYes">Yes</label>
+                            </div>
+                            <div class="custom-control custom-radio">
+                                <input type="radio" id="nfcNo" name="filter.NFC" value="false" @(Model.Filter.NFC == false ? "checked" : "")>
+                                <label for="nfcNo">No</label>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+
+                    <button type="button" class="accordion">Number of SIM Cards</button>
+                    <div class="panel">
+                        <div class="filter-input">
+                            <div class="input-group" style="padding-right:40%;">
+                                <input name="filter.NumberOfSIMCards" type="text" class="form-control" placeholder="Cards count" value="@Model.Filter.NumberOfSIMCards">
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+
                     <div class="search-div">
                         <input type="text" id="searchText" name="filter.SearchText" placeholder="Search by name" class="form-control" value="@Model.Filter.SearchText">
                         <button type="submit" class="btn btn-primary">Search</button>
                     </div> 
                 </form>
-            </div>
-            <div class="products">
-                <table class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th scope="col">Name</th>
-                            <th scope="col">Images</th>
-                            <th scope="col">Price</th>
-                            <th scope="col">Producer</th>
-                            <th scope="col">RAM</th>
-                            <th scope="col">Operating system</th>
-                            <th scope="col">NFC</th>
-                            <th scope="col">SIMs</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (!Model.Products.Any() && !string.IsNullOrEmpty(Model.Filter.SearchText))
-                        {
-                            <tr>
-                                <td colspan="8">No products found.</td>
-                            </tr>
-                        }
-                        else
-                        {
-                            @foreach (var item in @Model.Products!)
+            </div> 
+            <div class="fourColumns">
+                @if (!Model.Products.Any() && !string.IsNullOrEmpty(Model.Filter.SearchText))
+                {
+                    <label>No products found. </label>
+                }
+                else
+                {
+                    @foreach (var item in @Model.Products!)
+                    {
+                        <div class=product>
+                            <p><span style="@(item.Discount == 0 ? "display: none;" : "")" class='bordered green'>Delivery: @item.Discount %</span></p>
+                            <a asp-controller="Home" asp-action="Open" asp-route-id="@item.Id">
+                                <img src="data:image/jpeg;base64,@Convert.ToBase64String(item.ProductImages.First().ImageData!)" alt="product image" />
+                            </a>
+                            <p>@item.Name</p> 
+                            @if(item.Discount != 0)
                             {
-                                <tr>
-                                    <td>@item.Name</td>
-                                    <td>@item.Price</td>
-                                    <td>
-                                        <img class="product-img" src="data:image/jpeg;base64,@Convert.ToBase64String(item.ProductImages.First().ImageData!)" alt="product image">
-                                    </td>
-                                    <td>@item.Producer</td>
-                                    <td>@item.RAM</td>
-                                    <td>@item.OperatingSystemEnum</td>
-                                    <td>@item.NFC</td>
-                                    <td>@item.NumberOfSIMCards</td>
-                                </tr>
+                                <p class=price>
+                                    <span class=crossed>@item.Price $</span>
+                                    @(item.Price - item.Price * item.Discount/100)
+                                </p>
                             }
-                        }
-                    </tbody>
-                </table>
+                            else
+                            {
+                                <p class=price>@item.Price $</p>
+                            } 
+                            <div class='hiddenAnimation'>
+                                <div class='buttons'>
+                                    <button class="cart">Add to cart <i class="fa-solid fa-cart-shopping"></i></button>
+                                    <button class="heart"><i class="fa-regular fa-heart"></i></button>
+                                </div>
+                                <div class="description"> 
+                                    <span>RAM: @item.RAM </span>
+                                    <span>Internal memory: @item.InternalMemory </span>
+                                    <span>Producer: @item.Producer</span>
+                                    <span>Operating system: @item.OperatingSystemEnum</span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
             </div>
         </div>
         <div class="container-paggination">
@@ -114,34 +175,77 @@
                     @if (pager.CurrentPage > 1)
                     {
                         <li class="page-item">
-                            <a class="page-link" asp-action="Index" asp-route-pg="1" asp-route-minPrice="@Model.Filter.MinPrice" asp-route-maxPrice="@Model.Filter.MaxPrice" asp-route-RAMs="@Model.Filter.RAMs" asp-route-searchText="@Model.Filter.SearchText">First</a>
+                            <a class="page-link" asp-action="Index" 
+                            asp-route-pg="1" 
+                            asp-route-minPrice="@Model.Filter.MinPrice" 
+                            asp-route-maxPrice="@Model.Filter.MaxPrice" 
+                            asp-route-RAMs="@Model.Filter.RAMs" 
+                            asp-route-searchText="@Model.Filter.SearchText" 
+                            asp-route-OperatingSystemEnum="@Model.Filter.OperatingSystems"
+                            asp-route-Producer="@Model.Filter.Producers"
+                            asp-route-NFC="@Model.Filter.NFC"
+                            asp-route-NFC="@Model.Filter.NumberOfSIMCards">First</a>
                         </li>
                         <li class="page-item">
                             <a class="page-link" asp-action="Index"
-                               asp-route-pg="@(pager.CurrentPage - 1)" asp-route-minPrice="@Model.Filter.MinPrice" asp-route-maxPrice="@Model.Filter.MaxPrice" asp-route-RAMs="@Model.Filter.RAMs" asp-route-searchText="@Model.Filter.SearchText">Previus</a>
+                               asp-route-pg="@(pager.CurrentPage - 1)" 
+                               asp-route-minPrice="@Model.Filter.MinPrice" 
+                               asp-route-maxPrice="@Model.Filter.MaxPrice"
+                               asp-route-RAMs="@Model.Filter.RAMs" 
+                               asp-route-searchText="@Model.Filter.SearchText"
+                               asp-route-OperatingSystemEnum="@Model.Filter.OperatingSystems"
+                               asp-route-Producer="@Model.Filter.Producers"
+                               asp-route-NFC="@Model.Filter.NFC"
+                               asp-route-NFC="@Model.Filter.NumberOfSIMCards">Previus</a>
                         </li>
                     }
 
                     @for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
                     {
                         <li class="page-item @(pge == pager.CurrentPage ? "active" : "")">
-                            <a class="page-link" asp-action="Index" asp-route-pg="@pge" asp-route-minPrice="@Model.Filter.MinPrice" asp-route-maxPrice="@Model.Filter.MaxPrice" asp-route-RAMs="@Model.Filter.RAMs" asp-route-searchText="@Model.Filter.SearchText">@pge</a>
+                            <a class="page-link" asp-action="Index" 
+                            asp-route-pg="@pge" 
+                            asp-route-minPrice="@Model.Filter.MinPrice" 
+                            asp-route-maxPrice="@Model.Filter.MaxPrice" 
+                            asp-route-RAMs="@Model.Filter.RAMs" 
+                            asp-route-searchText="@Model.Filter.SearchText"
+                            asp-route-OperatingSystemEnum="@Model.Filter.OperatingSystems"
+                            asp-route-Producer="@Model.Filter.Producers"
+                            asp-route-NFC="@Model.Filter.NFC"
+                            asp-route-NFC="@Model.Filter.NumberOfSIMCards">@pge</a>
                         </li>
                     }
 
                     @if (pager.CurrentPage < pager.TotalPages)
                     {
                         <li class="page-item">
-                            <a class="page-link" asp-action="Index" asp-route-pg="@(pager.CurrentPage + 1)" asp-route-minPrice="@Model.Filter.MinPrice" asp-route-maxPrice="@Model.Filter.MaxPrice" asp-route-RAMs="@Model.Filter.RAMs" asp-route-searchText="@Model.Filter.SearchText">Next</a>
+                            <a class="page-link" asp-action="Index" 
+                            asp-route-pg="@(pager.CurrentPage + 1)" 
+                            asp-route-minPrice="@Model.Filter.MinPrice" 
+                            asp-route-maxPrice="@Model.Filter.MaxPrice" 
+                            asp-route-RAMs="@Model.Filter.RAMs" 
+                            asp-route-searchText="@Model.Filter.SearchText"
+                            asp-route-OperatingSystemEnum="@Model.Filter.OperatingSystems"
+                            asp-route-Producer="@Model.Filter.Producers"
+                            asp-route-NFC="@Model.Filter.NFC"
+                            asp-route-NFC="@Model.Filter.NumberOfSIMCards">Next</a>
                         </li>
                         <li class="page-item">
-                            <a class="page-link" asp-action="Index" asp-route-pg="@(pager.TotalPages)" asp-route-minPrice="@Model.Filter.MinPrice" asp-route-maxPrice="@Model.Filter.MaxPrice" asp-route-RAMs="@Model.Filter.RAMs" asp-route-searchText="@Model.Filter.SearchText">Last</a>
+                            <a class="page-link" asp-action="Index" 
+                            asp-route-pg="@(pager.TotalPages)" 
+                            asp-route-minPrice="@Model.Filter.MinPrice" 
+                            asp-route-maxPrice="@Model.Filter.MaxPrice" 
+                            asp-route-RAMs="@Model.Filter.RAMs" 
+                            asp-route-searchText="@Model.Filter.SearchText"
+                            asp-route-OperatingSystemEnum="@Model.Filter.OperatingSystems"
+                            asp-route-Producer="@Model.Filter.Producers"
+                            asp-route-NFC="@Model.Filter.NFC"
+                            asp-route-NFC="@Model.Filter.NumberOfSIMCards">Last</a>
                         </li>
                     }
                 </ul>
             }
         </div>
-
     </main>
     <script src="~/js/Home.js"></script>   
 </body>

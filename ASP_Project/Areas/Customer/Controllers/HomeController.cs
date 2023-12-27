@@ -1,11 +1,11 @@
 ﻿using ASP_Project.Areas.Identity.Data.DbContexts;
 using ASP_Project.Areas.Identity.Data.Models;
+using ASP_Project.Areas.Identity.Data.Validators;
 using ASP_Project.Models;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
-using System.Linq;
 
 namespace ASP_Project.Areas.Customer.Controllers;
 
@@ -34,14 +34,19 @@ public class HomeController : Controller
 
         if (filter.MaxPrice != null) productsQuery = productsQuery.Where(p => p.Price <= filter.MaxPrice);
 
-        if (filter.RAMs != null && filter.RAMs.Any())
-        {
-            productsQuery = productsQuery.Where(p => filter.RAMs.Contains(p.RAM));
-        }
+        if (filter.RAMs != null && filter.RAMs.Any()) productsQuery = productsQuery.Where(p => filter.RAMs.Contains(p.RAM));
+
+        if (filter.OperatingSystems != null && filter.OperatingSystems.Any()) productsQuery = productsQuery.Where(p => filter.OperatingSystems.Contains(p.OperatingSystemEnum));
+        
+        if (filter.Producers != null && filter.Producers.Any()) productsQuery = productsQuery.Where(p => filter.Producers.Contains(p.Producer));
+
+        if (filter.NFC != null) productsQuery = productsQuery.Where(p => p.NFC == filter.NFC);
+
+        if (filter.NumberOfSIMCards != null) productsQuery = productsQuery.Where(p => p.NumberOfSIMCards == filter.NumberOfSIMCards);
 
         List<Product> products = await productsQuery.ToListAsync();
 
-        const int pageSize = 10;
+        const int pageSize = 12;
 
         if (pg < 1) pg = 1;
         
@@ -69,6 +74,22 @@ public class HomeController : Controller
     public IActionResult Error()
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-    }
-    
+    } 
+    public async Task<IActionResult> Open(int id)
+	{
+		var product = await _dbContext.Products.FindAsync(id);
+
+		if (product == null) return NotFound();
+		product.ProductImages = await _dbContext.ProductImages.Where(pi => pi.ProductId == id).ToListAsync();
+
+		return View(product);
+	}
+
+	[HttpPost]
+	[ValidateAntiForgeryToken]
+	public async Task<IActionResult> Buy(Product? product,int count)
+	{
+		TempData["success"] = "Product bought successfully";
+		return RedirectToAction("Index", "Home");
+	}
 }

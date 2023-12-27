@@ -16,7 +16,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarColor01">
-                    <ul class="navbar-nav me-auto">
+                    <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-light" asp-area="Customer" asp-action="Index" asp-controller="Home"> Home </a>
                         </li>
@@ -34,13 +34,11 @@
                 </div>
             </div> 
         </nav>
-    </header>
+    </header> 
 
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main> 
 
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

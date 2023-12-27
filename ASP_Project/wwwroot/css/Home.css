@@ -1,10 +1,10 @@
 ﻿/* filter */
 
-body { 
-    width:100%;
+body {
+    width: 100%;
     font-family: Arial, Helvetica, sans-serif;
     background-color: #f3f2f2;
-    accent-color: #b2b1b1;
+    accent-color: #b2b1b1; 
 } 
 
 .redBtn {
@@ -16,7 +16,11 @@ body {
     margin: 10px;
 }
 
-
+.product img {
+    width: 150px;
+    height: 190px;
+    cursor: pointer;
+}
 
 input:checked {
     background-color: #c62f2f;
@@ -36,7 +40,6 @@ input:checked {
     background-color: transparent;
     border: 2px solid transparent;
 }
-
 .product {
     background-color: white;
     height: 330px;
@@ -49,38 +52,60 @@ input:checked {
     border-radius: 10px;
     margin: 10px 0;
 }
-.product-img{
-    width:60px; 
-    height:60px; 
-}
+
 .hiddenAnimation {
     display: none;
-    width: 95%;
+    width: 100%;
+    border: 2px solid white;
+    background-color: white;
+    border-radius: 0 0 10px 10px;
+    margin: 0;
+    padding: 0 10px;
+    padding-bottom: 10px;
+    font-size: 12px; 
+}
+.hiddenAnimation .description {
+    padding: 0 10px;
+    display:flex;
+    flex-direction:column;
+}
+
+.hiddenAnimation .description span {
+    line-height: 2;
 }
 
 .product .hiddenAnimation {
     display: none;
-    transition: display 0.3s ease; /* Add a smooth transition effect */
+    transition: display 0.3s ease; 
 }
-
 
 
 .product:hover {
-    height: 530px; /* Show the description element when hovering over the product */
+    --scale: (1, 2);
+    border-radius: 10px 10px 0 0;
+    transform: scale(var(--scale));
 }
 
-    .product:hover .hiddenAnimation {
-        display: block; /* Show the description element when hovering over the product */
-    }
+.product:hover > * {
+    transform: scale(calc(1/var(--scale)));
+}
+
+.product:hover .hiddenAnimation {
+    box-shadow: 0 8px 10px lightGray;
+    z-index: 1;
+    display: block; 
+}
 
 .price {
     margin: 0 0 20px 0;
     color: #e53838;
+    font-weight:bold;
 }
 
 .product p {
     width: 75%;
     text-align: left;
+    padding-top: 0.5rem;
 }
 
 .bordered {
@@ -188,14 +213,13 @@ button > i {
 .infoRow {
     display: flex;
     justify-content: space-between;
-}
-
+} 
 /* filter end */
 .container-paggination {
-    display:flex;
-    width:100%;
-    justify-content:space-evenly;
-    margin:10px 0;
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
+    margin: 10rem 0 0 0;
 }
 .main-container {
     display: flex;
@@ -216,22 +240,21 @@ button > i {
     margin: 1rem 1rem 1rem 0;
     padding: 10px 2px;
 }
-    .filters::-webkit-scrollbar {
-        width: 0.4em;  ширина скроллера 
-    }
+.filters::-webkit-scrollbar {
+    width: 0.4em;
+}
 
-    .filters::-webkit-scrollbar-thumb {
-        background-color: transparent;  цвет скроллера 
-    }
+.filters::-webkit-scrollbar-thumb {
+    background-color: transparent;  
+}
+ 
+.filters::-webkit-scrollbar-track {
+    background-color: transparent;  
+ }
 
-     дополнительные стили для старых версий webkit (необходимые для некоторых версий safari) 
-    .filters::-webkit-scrollbar-track {
-        background-color: transparent;  цвет фона трека (полосы, по которой двигается скроллер) 
-    }
-
-    .filters::-webkit-scrollbar-thumb:hover {
-        background-color: #888;  цвет скроллера при наведении (опционально) 
-    }
+.filters::-webkit-scrollbar-thumb:hover {
+    background-color: #888; 
+}
 .filter-input{
     padding:0.3rem;
     margin:0;

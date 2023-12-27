@@ -2,41 +2,31 @@
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - ECommerce</title>
+    <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ASP_Project.styles.css" asp-append-version="true" />
-    <script defer src="https://kit.fontawesome.com/83866ffd34.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="css/productIndex.css" />
+    <script src="https://kit.fontawesome.com/dbed6b6114.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <header> 
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark flex-wrap">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ECommerce</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <a class="navbar-brand" asp-area="Customer" asp-action="Index" asp-controller="Home">ECommerce</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                <div class="collapse navbar-collapse" id="navbarColor01">
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between" style="display:flex; justify-content:space-between">
+                    <ul class="navbar-nav">
                         <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        @if (!SignInManager.IsSignedIn(User))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Login">Log In</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Register">Sign Up</a>
-                            </li>
-                        }
+                        </li> 
                         @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
@@ -49,25 +39,8 @@
                                 <a class="nav-link text-light" asp-area="Admin" asp-controller="Product" asp-action="Index">Products</a>
                             </li> 
                         }
-                        @if (SignInManager.IsSignedIn(User))
-                        { 
-                            <li class="nav-item">
-                                <a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Logout">Log Out</a>
-                            </li>
-                        }
                         @if (!User.IsInRole("Admin"))
-                        {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link text-light dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Category </a>
-
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">Category</a>
-                                    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">Category</a>
-                                    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">Category</a>
-                                    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">Category</a>
-                                    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">Category</a>
-                                </div>
-                            </li>
+                        { 
                             <li class="nav-item">
                                 <a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Logout">
                                     <i class="fa-sharp fa-solid fa-heart fa-lg" style="color: #ffffff;"></i>
@@ -80,19 +53,31 @@
                             </li>
                         }
                     </ul>
-                </div> 
-            @if (!User.IsInRole("Admin"))
-            {   
-                <div class="dropdown">
-                    <ul class="navbar-nav me-auto">
-                        
+                    <ul class="navbar-nav">
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <li class="nav-item">
+                                <a id="manage" class="nav-link text-light" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
+                                        @(User.IsInRole("Admin") ? $"Welcome my lord {@UserManager.GetUserName(User)!}" : $"Welcome {@UserManager.GetUserName(User)}!")
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                    <button id="logout" type="submit" class="nav-link btn btn-link text-light border-0">Logout</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Login">Log In</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Register">Sign Up</a>
+                            </li>
+                        }
                     </ul>
-                </div>
-                <form class="d-flex w-25">
-                    <input class="form-control me-sm-2" type="search" placeholder="Search">
-                    <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-                </form>
-            }
+                </div>  
             </div>
         </nav>
     </header>  
@@ -104,22 +89,22 @@
     <footer class="text-center text-lg-start bg-black text-muted">
         <section class="d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
             <div>
-                <a href="" class="me-4 link-secondary">
+                <a href="https://www.facebook.com/Ayxan2004" class="me-4 link-secondary">
                     <i class="fab fa-facebook-f"></i>
                 </a>
-                <a href="" class="me-4 link-secondary">
+                <a href="https://www.facebook.com/Ayxan2004" class="me-4 link-secondary">
                     <i class="fab fa-twitter"></i>
                 </a>
-                <a href="" class="me-4 link-secondary">
+                <a href="https://www.facebook.com/Ayxan2004" class="me-4 link-secondary">
                     <i class="fab fa-google"></i>
                 </a>
-                <a href="" class="me-4 link-secondary">
+                <a href="https://www.instagram.com/ayxan_zeynalov6/" class="me-4 link-secondary">
                     <i class="fab fa-instagram"></i>
                 </a>
-                <a href="" class="me-4 link-secondary">
+                <a href="https://www.linkedin.com/in/ayxan-zeynalov-3643b221a/" class="me-4 link-secondary">
                     <i class="fab fa-linkedin"></i>
                 </a>
-                <a href="" class="me-4 link-secondary">
+                <a href="https://github.com/AyKhanZ/Ecommerce/tree/master" class="me-4 link-secondary">
                     <i class="fab fa-github"></i>
                 </a>
             </div>
@@ -171,7 +156,7 @@
                     </div>
                     <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-4">
                         <h6 class="text-uppercase fw-bold mb-4"> Contact</h6>
-                        <p><i class="fas fa-home text-secondary"></i> New York, NY 10012, US</p>
+                        <p><i class="fas fa-home text-secondary"></i> Baku, Xatai</p>
                         <p><i class="fas fa-envelope text-secondary"></i> zeynalovayxan70@gmail.com</p>
                         <p><i class="fas fa-phone text-secondary"></i> +994 51 493 86 98</p>
                     </div>
